@@ -4,6 +4,7 @@ import com.jello.jello_app.security.user.AppUserDetails;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -35,6 +36,14 @@ public class JwtUtils {
                 .expiration(new Date(System.currentTimeMillis() + expirationTime))
                 .signWith(key())
                 .compact();
+    }
+
+    public String getJwtFromHeader(HttpServletRequest request) {
+        String token = request.getHeader("Authorization");
+        if (token != null && token.startsWith("Bearer ")) {
+            return token.substring(7);
+        }
+        return null;
     }
 
     private Key key(){
