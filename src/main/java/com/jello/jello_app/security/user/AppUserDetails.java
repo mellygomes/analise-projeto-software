@@ -1,5 +1,6 @@
 package com.jello.jello_app.security.user;
 
+import com.jello.jello_app.model.User;
 import lombok.Data;
 import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
@@ -27,6 +28,7 @@ public class AppUserDetails implements UserDetails {
         return new AppUserDetails(
                 user.getId(),
                 user.getEmail(),
+                user.getUsername(),
                 user.getPassword(),
                 authorities
         );
