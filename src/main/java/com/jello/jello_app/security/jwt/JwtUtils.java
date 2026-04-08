@@ -1,8 +1,7 @@
 package com.jello.jello_app.security.jwt;
 
 import com.jello.jello_app.security.user.AppUserDetails;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
@@ -55,9 +54,22 @@ public class JwtUtils {
                     .build()
                     .parseSignedClaims(token);
             return true;
-        } catch (JwtException | IllegalArgumentException e) {
+        } catch (ExpiredJwtException
+                 | UnsupportedJwtException
+                 | MalformedJwtException
+                 | io.jsonwebtoken.security.SecurityException
+                 | IllegalArgumentException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public String getUsernameFromToken(String token) {
+        return Jwts.parser()
+                .verifyWith((SecretKey) key())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .getSubject();
     }
 
     private Key key(){
