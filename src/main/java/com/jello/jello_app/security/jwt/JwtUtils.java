@@ -1,7 +1,9 @@
 package com.jello.jello_app.security.jwt;
 
+import com.jello.jello_app.security.user.AppUserDetails;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -17,6 +19,10 @@ public class JwtUtils {
     public String generateTokenForUser(Authentication authenticaition) {
         AppUserDetails userPrincipal = (AppUserDetails) authenticaition.getPrincipal();
 
-        List<String> roles = userPrincipal;
+        List<String> roles = userPrincipal.getAuthorities()
+                .stream()
+                .map(GrantedAuthority::getAuthority).toList();
+
+        return Jwts
     }
 }

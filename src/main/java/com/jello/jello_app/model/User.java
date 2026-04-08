@@ -3,6 +3,9 @@ package com.jello.jello_app.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.Collection;
+import java.util.HashSet;
+
 @Data
 @Entity
 public class User {
