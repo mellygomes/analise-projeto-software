@@ -1,6 +1,7 @@
 package com.jello.jello_app.security.jwt;
 
 import com.jello.jello_app.security.user.AppUserDetails;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -10,6 +11,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.SecretKey;
 import java.security.Key;
 import java.util.Date;
 import java.util.List;
@@ -44,6 +46,18 @@ public class JwtUtils {
             return token.substring(7);
         }
         return null;
+    }
+
+    public boolean validateToken(String token) {
+        try {
+            Jwts.parser()
+                    .verifyWith((SecretKey) key())
+                    .build()
+                    .parseSignedClaims(token);
+            return true;
+        } catch (JwtException | IllegalArgumentException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private Key key(){
