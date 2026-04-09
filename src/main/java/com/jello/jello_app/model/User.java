@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Blob;
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -27,6 +28,9 @@ public class User {
     private String username;
 
     private String password;
+
+    @Lob
+    private Blob profilePicture;
 
 //    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 //    private List<Post> posts;
