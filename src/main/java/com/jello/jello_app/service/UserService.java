@@ -4,7 +4,6 @@ import com.jello.jello_app.dto.*;
 import com.jello.jello_app.model.User;
 
 public interface UserService {
-    JwtAuthenticationResponse login(LoginRequest loginRequest);
     User register(RegisterRequest registerRequest);
     UserDTO userDtoBuilder(User user);
 }

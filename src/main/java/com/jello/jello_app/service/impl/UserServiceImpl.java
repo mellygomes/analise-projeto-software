@@ -34,11 +34,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public JwtAuthenticationResponse login(LoginRequest loginRequest) {
-        return null;
-    }
-
-    @Override
     public UserDTO userDtoBuilder(User user){
         return UserDTO.builder()
                 .email(user.getEmail())
