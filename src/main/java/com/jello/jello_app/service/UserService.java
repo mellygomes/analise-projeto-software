@@ -5,4 +5,5 @@ import com.jello.jello_app.dto.LoginRequest;
 
 public interface UserService {
     JwtAuthenticationResponse login(LoginRequest loginRequest);
+
 }
