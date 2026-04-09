@@ -8,4 +8,5 @@ public interface UserService {
     UserDTO userDtoBuilder(User user);
     User getUserById(Long userId);
     User updateUser(UpdateUserRequest request, Long userId);
+    void deleteUser(Long userId);
 }

@@ -55,9 +55,17 @@ public class UserServiceImpl implements UserService {
                 .map(existingUser -> {
                     existingUser.setFirstName(request.getFirstName());
                     existingUser.setLastName(request.getLastName());
+                    existingUser.setPassword(passwordEncoder.encode(request.getPassword()));
                     return userRepository.save(existingUser);
                 })
-                .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
+                .orElseThrow(() -> new RuntimeException("User not found!"));
+    }
 
+    @Override
+    public void deleteUser(Long userId) {
+        userRepository.findById(userId)
+                .ifPresentOrElse(userRepository :: delete, () -> {
+                    throw new RuntimeException("User not found");
+                });
     }
 }
