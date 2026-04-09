@@ -38,7 +38,8 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 
-    private UserDTO userDtoBuilder(User user){
+    @Override
+    public UserDTO userDtoBuilder(User user){
         return UserDTO.builder()
                 .email(user.getEmail())
                 .username(user.getUsername())
