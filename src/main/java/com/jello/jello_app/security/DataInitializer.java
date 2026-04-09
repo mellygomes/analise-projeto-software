@@ -59,4 +59,25 @@ public class DataInitializer implements ApplicationListener<ApplicationReadyEven
             System.out.println("Default admin " + i + " created successfully!");
         }
     }
+
+    private void createDefaultUsers() {
+        Role userRole = roleRepository.findByName("ROLE_USER")
+                .orElseThrow(() -> new RuntimeException("ROLE_USER not found!"));
+
+        for (int i = 1; i <= 5; i++) {
+            String email = "user" + i + "@email.com";
+            String username = "user" + i;
+            if (userRepository.existsByEmail(email)) continue;
+
+            User user = new User();
+            user.setFirstName("The");
+            user.setLastName("User " + i);
+            user.setEmail(email);
+            user.setUsername(username);
+            user.setPassword(passwordEncoder.encode("password"));
+            user.setRoles(Set.of(userRole));
+            userRepository.save(user);
+            System.out.println("Default user " + i + " created successfully!");
+        }
+    }
 }
