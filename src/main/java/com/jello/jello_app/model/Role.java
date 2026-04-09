@@ -10,6 +10,7 @@ import java.util.HashSet;
 
 @Data
 @Entity
+@Table(name = "roles")
 @NoArgsConstructor
 @AllArgsConstructor
 public class Role {
