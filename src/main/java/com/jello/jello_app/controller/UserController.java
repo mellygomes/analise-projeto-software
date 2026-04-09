@@ -56,5 +56,14 @@ public class UserController {
         }
     }
 
-
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<ApiResponse> deleteUser (@PathVariable Long userId){
+        try {
+            userService.deleteUser(userId);
+            return ResponseEntity.ok(new ApiResponse("Delete success!", null));
+        } catch (Exception e) {
+            return ResponseEntity.status(NOT_FOUND)
+                    .body(new ApiResponse(e.getMessage(), null));
+        }
+    }
 }
