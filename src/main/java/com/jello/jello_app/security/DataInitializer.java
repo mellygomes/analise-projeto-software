@@ -48,7 +48,15 @@ public class DataInitializer implements ApplicationListener<ApplicationReadyEven
             String username = "admin" + i;
             if (userRepository.existsByEmail(email)) continue;
 
-            User admin = new User;
+            User admin = new User();
+            admin.setFirstName("Ade");
+            admin.setLastName("Miro" + i);
+            admin.setEmail(email);
+            admin.setUsername(username);
+            admin.setPassword(passwordEncoder.encode("password"));
+            admin.setRoles(Set.of(adminRole));
+            userRepository.save(admin);
+            System.out.println("Default admin " + i + " created successfully!");
         }
     }
 }
