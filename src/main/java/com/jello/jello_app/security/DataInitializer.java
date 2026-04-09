@@ -1,6 +1,7 @@
 package com.jello.jello_app.security;
 
 import com.jello.jello_app.model.Role;
+import com.jello.jello_app.model.User;
 import com.jello.jello_app.repository.RoleRepository;
 import com.jello.jello_app.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -36,5 +37,18 @@ public class DataInitializer implements ApplicationListener<ApplicationReadyEven
                     System.out.println("Created role: " + newRole);
                     return newRole;
                 }));
+    }
+
+    private void createDefaultAdmins() {
+        Role adminRole = roleRepository.findByName("ROLE_ADMIN")
+                .orElseThrow(() -> new RuntimeException("ROLE_ADMIN not found!"));
+
+        for (int i = 1; i <= 2; i++) {
+            String email = "admin" + i + "email.com";
+            String username = "admin" + i;
+            if (userRepository.existsByEmail(email)) continue;
+
+            User admin = new User;
+        }
     }
 }
