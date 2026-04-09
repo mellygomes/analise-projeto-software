@@ -42,4 +42,10 @@ public class UserServiceImpl implements UserService {
                 .lastName(user.getLastName())
                 .build();
     }
+
+    @Override
+    public User getUserById(Long userId){
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found!"));
+    }
 }
