@@ -8,6 +8,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import javax.swing.text.html.Option;
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -15,29 +18,19 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public ApiResponse register(RegisterRequest registerRequest) {
-        User user = new User();
-        ApiResponse response = new ApiResponse();
-        try{
-            if(userRepository.existsByEmail(registerRequest.getEmail())) {
-                throw new RuntimeException(registerRequest.getEmail() + " already exists");
-            }
-            if(userRepository.existsByUsername(registerRequest.getUsername())){
-                throw new RuntimeException(registerRequest.getUsername() + " already exists");
-            }
-            user.setEmail(registerRequest.getEmail());
-            user.setUsername(registerRequest.getUsername());
-            user.setFirstName(registerRequest.getFirstName());
-            user.setLastName(registerRequest.getLastName());
-            user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
-            User savedUser = userRepository.save(user);
-            response.setData(savedUser);
-            response.setMessage("User registered successfully");
-        } catch (Exception e){
-            response.setMessage(e.getMessage());
-            response.setData(null);
-        }
-        return response;
+    public User register(RegisterRequest request) {
+        return Optional.of(request)
+                .filter(user -> !userRepository.existsByEmail(request.getEmail()))
+                .filter(user -> !userRepository.existsByUsername(request.getUsername()))
+                .map(req -> {
+                    User user = new User();
+                    user.setFirstName(request.getFirstName());
+                    user.setLastName(request.getLastName());
+                    user.setEmail(request.getEmail());
+                    user.setPassword(passwordEncoder.encode(request.getPassword()));
+                    return userRepository.save(user);
+                })
+                .orElseThrow(() -> new RuntimeException("User or email already registered!"));
     }
 
     @Override

@@ -1,8 +1,9 @@
 package com.jello.jello_app.service;
 
 import com.jello.jello_app.dto.*;
+import com.jello.jello_app.model.User;
 
 public interface UserService {
     JwtAuthenticationResponse login(LoginRequest loginRequest);
-    ApiResponse register(RegisterRequest registerRequest);
+    User register(RegisterRequest registerRequest);
 }
