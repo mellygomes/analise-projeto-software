@@ -29,7 +29,9 @@ public class UserServiceImpl implements UserService {
                     user.setFirstName(request.getFirstName());
                     user.setLastName(request.getLastName());
                     user.setEmail(request.getEmail());
+                    user.setUsername(request.getUsername());
                     user.setPassword(passwordEncoder.encode(request.getPassword()));
+                    user.setProfilePicture(null);
                     return userRepository.save(user);
                 })
                 .orElseThrow(() -> new RuntimeException("User or email already registered!"));

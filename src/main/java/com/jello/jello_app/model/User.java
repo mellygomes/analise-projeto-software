@@ -30,8 +30,8 @@ public class User {
 
     private String password;
 
-    @Lob
-    private Blob profilePicture;
+    @Column(columnDefinition = "BYTEA")
+    private byte[] profilePicture;
 
 //    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 //    private List<Post> posts;
