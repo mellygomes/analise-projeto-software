@@ -5,5 +5,6 @@ CREATE TABLE public.users
     first_name VARCHAR(255),
     last_name VARCHAR(255),
     password VARCHAR(255),
-    username VARCHAR(255) UNIQUE
+    username VARCHAR(255) UNIQUE,
+    profile_picture BYTEA
 );
