@@ -13,6 +13,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.swing.text.html.Option;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
@@ -93,7 +94,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new RuntimeException("ROLE_ADMIN not found!"));
         return userRepository.findById(userId)
                 .map(existingUser -> {
-                    existingUser.setRoles(Set.of(adminRole));
+                    existingUser.setRoles(new HashSet<>(Set.of(adminRole)));
                     return userRepository.save(existingUser);
                 })
                 .orElseThrow(() -> new RuntimeException("User not found!"));
