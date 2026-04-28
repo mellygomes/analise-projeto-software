@@ -10,4 +10,5 @@ public interface UserService {
     User updateUser(UpdateUserRequest request, Long userId);
     void deleteUser(Long userId);
     User getAuthenticatedUser();
+    User grantAdmin(Long userId);
 }
