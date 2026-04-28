@@ -111,4 +111,16 @@ public class UserServiceImpl implements UserService {
                 })
                 .orElseThrow(() -> new RuntimeException("User not found!"));
     }
+
+    @Override
+    public User grantModerator(Long userId) {
+        Role moderatorRole = roleRepository.findByName("ROLE_MODERATOR")
+                .orElseThrow(() -> new RuntimeException("ROLE_MODERATOR not found!"));
+        return userRepository.findById(userId)
+                .map(existingUser -> {
+                    existingUser.setRoles(new HashSet<>(Set.of(moderatorRole)));
+                    return userRepository.save(existingUser);
+                })
+                .orElseThrow(() -> new RuntimeException("User not found!"));
+    }
 }
