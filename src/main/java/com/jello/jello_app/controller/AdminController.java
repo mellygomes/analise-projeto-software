@@ -7,6 +7,7 @@ import com.jello.jello_app.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,6 +19,7 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 public class AdminController {
     private final UserService userService;
 
+    @PostMapping("{$/userId}")
     public ResponseEntity<ApiResponse> grantAdmin(@PathVariable Long userId){
         User user = userService.grantAdmin(userId);
 
