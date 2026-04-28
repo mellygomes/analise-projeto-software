@@ -20,12 +20,21 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 public class AdminController {
     private final UserService userService;
 
-    @PostMapping("/{userId}")
+    @PostMapping("/{userId}/grant")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse> grantAdmin(@PathVariable Long userId){
         User user = userService.grantAdmin(userId);
 
         UserDTO userDto = userService.userDtoBuilder(user);
         return ResponseEntity.ok(new ApiResponse("User updated to admin!", userDto));
+    }
+
+    @PostMapping("/{userId}/remove")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse> removeAdmin(@PathVariable Long userId){
+        User user = userService.removeAdmin(userId);
+
+        UserDTO userDto = userService.userDtoBuilder(user);
+        return ResponseEntity.ok(new ApiResponse("Admin promoted to client!", userDto));
     }
 }
