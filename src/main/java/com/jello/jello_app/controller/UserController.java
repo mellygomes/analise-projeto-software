@@ -51,8 +51,8 @@ public class UserController {
         }
     }
 
-
     @PutMapping("/{userId}")
+    @PreAuthorize("#userId == authentication.principal.id or hasRole('ADMIN')")
     public ResponseEntity<ApiResponse> updateUser(@RequestBody UpdateUserRequest request, @PathVariable Long userId) {
         try {
             User user = userService.updateUser(request, userId);
@@ -65,6 +65,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{userId}")
+    @PreAuthorize("#userId == authentication.principal.id or hasRole('ADMIN')")
     public ResponseEntity<ApiResponse> deleteUser (@PathVariable Long userId){
         try {
             userService.deleteUser(userId);
