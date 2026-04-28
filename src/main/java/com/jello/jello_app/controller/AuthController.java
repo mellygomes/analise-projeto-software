@@ -1,8 +1,7 @@
 package com.jello.jello_app.controller;
 
-import com.jello.jello_app.dto.ApiResponse;
-import com.jello.jello_app.dto.JwtAuthenticationResponse;
-import com.jello.jello_app.dto.LoginRequest;
+import com.jello.jello_app.dto.*;
+import com.jello.jello_app.model.User;
 import com.jello.jello_app.security.jwt.JwtUtils;
 import com.jello.jello_app.security.user.AppUserDetails;
 import com.jello.jello_app.service.UserService;
@@ -17,6 +16,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import static org.springframework.http.HttpStatus.CONFLICT;
 
 @RestController
 @RequiredArgsConstructor
@@ -42,5 +43,16 @@ public class AuthController {
         }
     }
 
+    @PostMapping("/register")
+    public ResponseEntity<ApiResponse> register(@RequestBody RegisterRequest request) {
+        try {
+            User user = userService.register(request);
+            UserDTO userDTO = userService.userDtoBuilder(user);
+            return ResponseEntity.ok(new ApiResponse("Registered!", userDTO));
+        }catch (Exception e){
+            return ResponseEntity.status(CONFLICT)
+                    .body(new ApiResponse(e.getMessage(), null));
+        }
+    }
 
 }

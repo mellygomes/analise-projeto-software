@@ -23,19 +23,6 @@ import static org.springframework.http.HttpStatus.*;
 @RequestMapping("${api.prefix}/users")
 public class UserController {
     private final UserService userService;
-    private final JwtUtils jwtUtils;
-
-    @PostMapping("/register")
-    public ResponseEntity<ApiResponse> register(@RequestBody RegisterRequest request) {
-        try {
-            User user = userService.register(request);
-            UserDTO userDTO = userService.userDtoBuilder(user);
-            return ResponseEntity.ok(new ApiResponse("Registered!", userDTO));
-        }catch (Exception e){
-            return ResponseEntity.status(CONFLICT)
-                    .body(new ApiResponse(e.getMessage(), null));
-        }
-    }
 
     @GetMapping("/{userId}")
     @PreAuthorize("#userId == authentication.principal.id or hasRole('ADMIN')")
