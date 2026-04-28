@@ -19,7 +19,7 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 public class AdminController {
     private final UserService userService;
 
-    @PostMapping("{$/userId}")
+    @PostMapping("{/userId}")
     public ResponseEntity<ApiResponse> grantAdmin(@PathVariable Long userId){
         User user = userService.grantAdmin(userId);
 
