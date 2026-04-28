@@ -86,4 +86,16 @@ public class UserServiceImpl implements UserService {
         String email = authentication.getName();
         return userRepository.findByEmail(email);
     }
+
+    @Override
+    public User grantAdmin(Long userId) {
+        Role adminRole = roleRepository.findByName("ROLE_ADMIN")
+                .orElseThrow(() -> new RuntimeException("ROLE_ADMIN not found!"));
+        return userRepository.findById(userId)
+                .map(existingUser -> {
+                    existingUser.setRoles(Set.of(adminRole));
+                    return userRepository.save(existingUser);
+                })
+                .orElseThrow(() -> new RuntimeException("User not found!"));
+    }
 }
