@@ -11,4 +11,5 @@ public interface UserService {
     void deleteUser(Long userId);
     User getAuthenticatedUser();
     User grantAdmin(Long userId);
+    User removeAdmin(Long userId);
 }

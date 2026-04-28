@@ -99,4 +99,16 @@ public class UserServiceImpl implements UserService {
                 })
                 .orElseThrow(() -> new RuntimeException("User not found!"));
     }
+
+    @Override
+    public User removeAdmin(Long userId) {
+        Role userRole = roleRepository.findByName("ROLE_USER")
+                .orElseThrow(() -> new RuntimeException("ROLE_USER not found!"));
+        return userRepository.findById(userId)
+                .map(existingUser -> {
+                    existingUser.setRoles(new HashSet<>(Set.of(userRole)));
+                    return userRepository.save(existingUser);
+                })
+                .orElseThrow(() -> new RuntimeException("User not found!"));
+    }
 }
