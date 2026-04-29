@@ -34,8 +34,6 @@ public class ImageServiceImpl implements ImageService {
                 Image savedImage = imageRepository.save(image);
                 savedImage.setDownloadUrl(buildDownloadUrl +  savedImage.getId());
 
-                imageRepository.save(savedImage);
-
                 ImageDTO imageDTO = new ImageDTO();
                 imageDTO.setId(savedImage.getId());
                 imageDTO.setFileName(savedImage.getFileName());
