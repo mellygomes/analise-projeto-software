@@ -19,6 +19,7 @@ public class Image {
     private String fileType;
     private String downloadUrl;
 
+    @Lob
     @Column(columnDefinition = "BYTEA")
     private byte[] image;
 

@@ -30,6 +30,7 @@ public class User {
 
     private String password;
 
+    @Lob
     @Column(columnDefinition = "BYTEA")
     private byte[] profilePicture;
 
