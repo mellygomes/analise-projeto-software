@@ -29,7 +29,7 @@ public class AdminController {
         return ResponseEntity.ok(new ApiResponse("User updated to admin!", userDto));
     }
 
-    @PostMapping("/{userId}/remove")
+    @PostMapping("/{userId}/revoke")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse> removeAdmin(@PathVariable Long userId){
         User user = userService.removeAdmin(userId);

@@ -27,7 +27,7 @@ public class ModeratorController {
         return ResponseEntity.ok(new ApiResponse("User updated to moderator!", userDto));
     }
 
-    @PostMapping("/{userId}/remove")
+    @PostMapping("/{userId}/revoke")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse> removeModerator(@PathVariable Long userId){
         User user = userService.removeModerator(userId);
