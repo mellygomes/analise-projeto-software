@@ -47,4 +47,10 @@ public class ImageServiceImpl implements ImageService {
 
         return savedImagesDTO;
     }
+
+    @Override
+    public Image getImageById(Long imageId){
+        return imageRepository.findById(imageId)
+                .orElseThrow(() -> new RuntimeException("Image not found!"));
+    }
 }
