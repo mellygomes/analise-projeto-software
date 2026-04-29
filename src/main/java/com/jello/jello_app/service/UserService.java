@@ -13,4 +13,5 @@ public interface UserService {
     User grantAdmin(Long userId);
     User removeAdmin(Long userId);
     User grantModerator(Long userId);
+    User removeModerator(Long userId);
 }
