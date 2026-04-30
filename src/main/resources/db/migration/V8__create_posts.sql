@@ -4,5 +4,5 @@ CREATE TABLE public.posts
     user_id BIGINT NOT NULL,
     title VARCHAR(255),
     content VARCHAR(255),
-    CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users(id)
+    CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
