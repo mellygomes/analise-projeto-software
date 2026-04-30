@@ -23,7 +23,7 @@ public class Image {
     @Column(columnDefinition = "BYTEA")
     private byte[] image;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     @JsonIgnore
     private Post post;

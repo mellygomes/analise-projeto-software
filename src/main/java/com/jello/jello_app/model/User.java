@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import java.sql.Blob;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 
 @Data
 @Entity
@@ -33,8 +34,8 @@ public class User {
     @Column(columnDefinition = "BYTEA")
     private byte[] profilePicture;
 
-//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<Post> posts;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Post> posts;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
