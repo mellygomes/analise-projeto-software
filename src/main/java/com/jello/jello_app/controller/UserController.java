@@ -8,10 +8,13 @@ import com.jello.jello_app.model.User;
 import com.jello.jello_app.security.jwt.JwtUtils;
 import com.jello.jello_app.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Objects;
@@ -23,6 +26,9 @@ import static org.springframework.http.HttpStatus.*;
 @RequestMapping("${api.prefix}/users")
 public class UserController {
     private final UserService userService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @GetMapping("/{userId}")
     @PreAuthorize("#userId == authentication.principal.id or hasRole('ADMIN')")
@@ -61,5 +67,11 @@ public class UserController {
             return ResponseEntity.status(NOT_FOUND)
                     .body(new ApiResponse(e.getMessage(), null));
         }
+    }
+
+    @GetMapping("/teste")
+    public String teste() {
+        System.out.println(passwordEncoder.encode("0123456789"));
+        return "toma";
     }
 }
