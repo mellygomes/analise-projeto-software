@@ -1,7 +1,9 @@
 package com.jello.jello_app.service.impl;
 
+import com.jello.jello_app.dto.CreatePostRequest;
 import com.jello.jello_app.dto.ImageDTO;
 import com.jello.jello_app.model.Image;
+import com.jello.jello_app.model.Post;
 import com.jello.jello_app.repository.ImageRepository;
 import com.jello.jello_app.service.ImageService;
 import jakarta.transaction.Transactional;
@@ -20,7 +22,7 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     @Transactional
-    public List<ImageDTO> saveImages(List<MultipartFile> files) {
+    public List<ImageDTO> saveImageForPost(List<MultipartFile> files, Post post) {
         List<ImageDTO> savedImagesDTO = new ArrayList<>();
         String buildDownloadUrl = "/api/v1/image/download/";
 
@@ -31,8 +33,11 @@ public class ImageServiceImpl implements ImageService {
                 image.setFileType(file.getContentType());
                 image.setImage(file.getBytes());
 
+                image.setPost(post);
+
                 Image savedImage = imageRepository.save(image);
                 savedImage.setDownloadUrl(buildDownloadUrl +  savedImage.getId());
+                imageRepository.save(savedImage);
 
                 ImageDTO imageDTO = new ImageDTO();
                 imageDTO.setId(savedImage.getId());
@@ -52,5 +57,35 @@ public class ImageServiceImpl implements ImageService {
     public Image getImageById(Long imageId){
         return imageRepository.findById(imageId)
                 .orElseThrow(() -> new RuntimeException("Image not found!"));
+    }
+
+    @Override
+    public List<ImageDTO> saveImages(List<MultipartFile> files){
+        List<ImageDTO> savedImagesDTO = new ArrayList<>();
+        String buildDownloadUrl = "/api/v1/image/download/";
+
+        for (MultipartFile file : files) {
+            try{
+                Image image = new Image();
+                image.setFileName(file.getOriginalFilename());
+                image.setFileType(file.getContentType());
+                image.setImage(file.getBytes());
+
+                Image savedImage = imageRepository.save(image);
+                savedImage.setDownloadUrl(buildDownloadUrl +  savedImage.getId());
+                imageRepository.save(savedImage);
+
+                ImageDTO imageDTO = new ImageDTO();
+                imageDTO.setId(savedImage.getId());
+                imageDTO.setFileName(savedImage.getFileName());
+                imageDTO.setDownloadUrl(savedImage.getDownloadUrl());
+
+                savedImagesDTO.add(imageDTO);
+            } catch (IOException e) {
+                throw new RuntimeException("Error processing image: " + file.getOriginalFilename(), e);
+            }
+        }
+
+        return savedImagesDTO;
     }
 }
