@@ -31,7 +31,7 @@ public class AdminController {
 
     @PostMapping("/{userId}/revoke")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ApiResponse> removeAdmin(@PathVariable Long userId){
+    public ResponseEntity<ApiResponse> revokeAdmin(@PathVariable Long userId){
         User user = userService.revokeAdmin(userId);
 
         UserDTO userDto = userService.userDtoBuilder(user);

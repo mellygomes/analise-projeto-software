@@ -29,7 +29,7 @@ public class ModeratorController {
 
     @PostMapping("/{userId}/revoke")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ApiResponse> removeModerator(@PathVariable Long userId){
+    public ResponseEntity<ApiResponse> revokeModerator(@PathVariable Long userId){
         User user = userService.revokeModerator(userId);
 
         UserDTO userDto = userService.userDtoBuilder(user);
