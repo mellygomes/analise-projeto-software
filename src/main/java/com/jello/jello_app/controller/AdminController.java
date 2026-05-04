@@ -32,7 +32,7 @@ public class AdminController {
     @PostMapping("/{userId}/revoke")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse> removeAdmin(@PathVariable Long userId){
-        User user = userService.removeAdmin(userId);
+        User user = userService.revokeAdmin(userId);
 
         UserDTO userDto = userService.userDtoBuilder(user);
         return ResponseEntity.ok(new ApiResponse("Admin promoted to client!", userDto));
