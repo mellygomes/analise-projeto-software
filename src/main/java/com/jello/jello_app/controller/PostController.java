@@ -2,6 +2,7 @@ package com.jello.jello_app.controller;
 
 import com.jello.jello_app.dto.ApiResponse;
 import com.jello.jello_app.dto.CreatePostRequest;
+import com.jello.jello_app.dto.PostDTO;
 import com.jello.jello_app.model.Post;
 import com.jello.jello_app.service.PostService;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,8 @@ public class PostController {
     public ResponseEntity<ApiResponse> createPost(@RequestParam List<MultipartFile> images, @RequestBody CreatePostRequest request) {
         try {
             Post createdPost = postService.createPost(request, images);
-            return ResponseEntity.ok(new ApiResponse("Post created successfully!", createdPost));
+            PostDTO post = postService.postDTOBuilder(createdPost);
+            return ResponseEntity.ok(new ApiResponse("Post created successfully!", post));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse(e.getMessage(), null));
