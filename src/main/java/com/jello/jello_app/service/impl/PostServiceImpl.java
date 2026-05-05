@@ -29,6 +29,7 @@ public class PostServiceImpl implements PostService {
         Post savedPost = null;
         try {
             User user = userService.getAuthenticatedUser();
+            System.out.println(user);
 
             Post post = new Post();
             post.setTitle(request.getTitle());
