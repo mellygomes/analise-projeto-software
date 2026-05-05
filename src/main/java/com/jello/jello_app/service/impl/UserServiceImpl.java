@@ -84,8 +84,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getAuthenticatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
-        return userRepository.findByEmail(email);
+        String username = authentication.getName();
+        return userRepository.findByUsername(username);
     }
 
     @Override
@@ -101,7 +101,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User removeAdmin(Long userId) {
+    public User revokeAdmin(Long userId) {
         Role userRole = roleRepository.findByName("ROLE_USER")
                 .orElseThrow(() -> new RuntimeException("ROLE_USER not found!"));
         return userRepository.findById(userId)
@@ -125,7 +125,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User removeModerator(Long userId) {
+    public User revokeModerator(Long userId) {
         Role userRole = roleRepository.findByName("ROLE_USER")
                 .orElseThrow(() -> new RuntimeException("ROLE_USER not found!"));
         return userRepository.findById(userId)
