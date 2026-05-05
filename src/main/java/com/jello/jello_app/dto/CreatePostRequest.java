@@ -9,5 +9,4 @@ import java.util.List;
 public class CreatePostRequest {
     private String title;
     private String content;
-    private List<MultipartFile> images;
 }

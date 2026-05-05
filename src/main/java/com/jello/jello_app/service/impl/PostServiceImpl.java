@@ -10,6 +10,9 @@ import com.jello.jello_app.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -20,7 +23,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public Post createPost(CreatePostRequest request) {
+    public Post createPost(CreatePostRequest request, List<MultipartFile> images) {
         User user = userService.getAuthenticatedUser();
 
         Post post = new Post();
@@ -30,8 +33,8 @@ public class PostServiceImpl implements PostService {
 
         Post savedPost = postRepository.save(post);
 
-        if(request.getImages() != null && !request.getImages().isEmpty()){
-            imageService.saveImageForPost(request.getImages(), savedPost);
+        if(images != null && !images.isEmpty()){
+            imageService.saveImageForPost(images, savedPost);
         }
 
         return savedPost;
