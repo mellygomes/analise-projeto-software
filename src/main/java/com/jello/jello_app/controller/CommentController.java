@@ -4,11 +4,14 @@ import com.jello.jello_app.dto.ApiResponse;
 import com.jello.jello_app.dto.CommentDTO;
 import com.jello.jello_app.dto.AddCommentRequest;
 import com.jello.jello_app.model.Comment;
+import com.jello.jello_app.model.Post;
 import com.jello.jello_app.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,5 +29,11 @@ public class CommentController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse(e.getMessage(), null));
         }
+    }
+
+    @GetMapping("/{postId}/all")
+    public ResponseEntity<ApiResponse> getAllCommentsFromPost(@PathVariable Post postId) {
+        List<CommentDTO> comments = commentService.getAllCommentsFromPost(postId);
+        return ResponseEntity.ok(new ApiResponse("Comments listed!", comments));
     }
 }

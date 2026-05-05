@@ -12,6 +12,8 @@ import com.jello.jello_app.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
@@ -46,6 +48,20 @@ public class CommentServiceImpl implements CommentService {
                 .user(comment.getUser().getUsername())
                 .content(comment.getContent())
                 .build();
+    }
+
+    @Override
+    public List<CommentDTO> getAllCommentsFromPost(Post postId) {
+        List<Comment> comments = commentRepository.findByPost(postId);
+
+        return comments.stream()
+                .map(com -> CommentDTO.builder()
+                        .id(com.getId())
+                        .postId(com.getPost().getId())
+                        .user(com.getUser().getUsername())
+                        .content(com.getContent())
+                        .build())
+                .toList();
     }
 }
 
