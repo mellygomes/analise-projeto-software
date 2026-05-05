@@ -6,5 +6,5 @@ CREATE TABLE public.images
     file_type VARCHAR(255),
     download_url VARCHAR(255),
     image BYTEA,
-    CONSTRAINT fk_post FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
+    CONSTRAINT fk_images_post FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
 );
