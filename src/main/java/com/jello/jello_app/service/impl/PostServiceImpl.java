@@ -3,6 +3,7 @@ package com.jello.jello_app.service.impl;
 import com.jello.jello_app.dto.CreatePostRequest;
 import com.jello.jello_app.model.Post;
 import com.jello.jello_app.model.User;
+import com.jello.jello_app.repository.PostRepository;
 import com.jello.jello_app.service.ImageService;
 import com.jello.jello_app.service.PostService;
 import com.jello.jello_app.service.UserService;
@@ -28,6 +29,10 @@ public class PostServiceImpl implements PostService {
         post.setUser(user);
 
         Post savedPost = postRepository.save(post);
+
+        if(request.getImages() != null && !request.getImages.isEmpty()){
+
+        }
 
         return null;
     }
