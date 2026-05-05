@@ -47,5 +47,14 @@ public class PostServiceImpl implements PostService {
         return savedPost;
     }
 
+    @Override
+    public PostDTO postDTOBuilder(Post post) {
+        return PostDTO.builder()
+                .id(post.getId())
+                .title(post.getTitle())
+                .content(post.getContent())
+                .images(post.getImages())
+                .build();
 
+    }
 }
