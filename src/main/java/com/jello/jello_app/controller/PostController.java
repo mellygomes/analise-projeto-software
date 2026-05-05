@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import tools.jackson.databind.ObjectMapper;
 
 import java.util.List;
 
@@ -19,8 +20,11 @@ import java.util.List;
 public class PostController {
     private final PostService postService;
 
-    @PostMapping("/create")
-    public ResponseEntity<ApiResponse> createPost(@RequestParam List<MultipartFile> images, @RequestBody CreatePostRequest request) {
+    @PostMapping(value = "/create", consumes = "multipart/form-data")
+    public ResponseEntity<ApiResponse> createPost(@RequestPart(value = "images") List<MultipartFile> images, @RequestPart("post") String postRequest) {
+        ObjectMapper mapper = new ObjectMapper();
+        CreatePostRequest request = mapper.readValue(postRequest, CreatePostRequest.class);
+
         try {
             Post createdPost = postService.createPost(request, images);
             PostDTO post = postService.postDTOBuilder(createdPost);
