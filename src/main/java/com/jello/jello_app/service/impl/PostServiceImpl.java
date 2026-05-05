@@ -30,10 +30,10 @@ public class PostServiceImpl implements PostService {
 
         Post savedPost = postRepository.save(post);
 
-        if(request.getImages() != null && !request.getImages.isEmpty()){
-
+        if(request.getImages() != null && !request.getImages().isEmpty()){
+            imageService.saveImageForPost(request.getImages(), savedPost);
         }
 
-        return null;
+        return savedPost;
     }
 }
