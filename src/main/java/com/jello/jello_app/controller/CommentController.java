@@ -9,9 +9,12 @@ import com.jello.jello_app.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @RestController
 @RequiredArgsConstructor
@@ -35,5 +38,17 @@ public class CommentController {
     public ResponseEntity<ApiResponse> getAllCommentsFromPost(@PathVariable Post postId) {
         List<CommentDTO> comments = commentService.getAllCommentsFromPost(postId);
         return ResponseEntity.ok(new ApiResponse("Comments listed!", comments));
+    }
+
+    @DeleteMapping("/{commentId}")
+    @PreAuthorize("#userId == authentication.principal.id or hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse> deleteComment(@PathVariable Long commentId) {
+        try{
+            commentService.deleteComment(commentId);
+            return ResponseEntity.ok(new ApiResponse("Comment deleted!", commentId));
+        } catch (Exception e) {
+            return ResponseEntity.status(NOT_FOUND)
+                    .body(new ApiResponse(e.getMessage(), null));
+        }
     }
 }
