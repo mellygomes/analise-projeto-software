@@ -29,8 +29,8 @@ public class ModeratorController {
 
     @PostMapping("/{userId}/revoke")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ApiResponse> removeModerator(@PathVariable Long userId){
-        User user = userService.removeModerator(userId);
+    public ResponseEntity<ApiResponse> revokeModerator(@PathVariable Long userId){
+        User user = userService.revokeModerator(userId);
 
         UserDTO userDto = userService.userDtoBuilder(user);
         return ResponseEntity.ok(new ApiResponse("Moderator updated to default user!", userDto));
