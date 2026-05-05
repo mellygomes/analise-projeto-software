@@ -1,9 +1,13 @@
 package com.jello.jello_app.controller;
 
 import com.jello.jello_app.dto.ApiResponse;
+import com.jello.jello_app.dto.CreatePostRequest;
+import com.jello.jello_app.model.Post;
 import com.jello.jello_app.service.PostService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,5 +21,14 @@ import java.util.List;
 public class PostController {
     private final PostService postService;
 
-    public ResponseEntity<ApiResponse> createPost(@RequestParam List<MultipartFile> images, Post)
+    public ResponseEntity<ApiResponse> createPost(@RequestParam List<MultipartFile> images, @RequestBody CreatePostRequest request) {
+        try {
+            Post createdPost = postService.createPost(request, images);
+            return ResponseEntity.ok(new ApiResponse("Post created successfully!", createdPost));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(e.getMessage(), null));
+        }
+
+    }
 }

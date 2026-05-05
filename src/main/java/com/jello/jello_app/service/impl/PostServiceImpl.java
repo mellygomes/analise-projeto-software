@@ -1,6 +1,7 @@
 package com.jello.jello_app.service.impl;
 
 import com.jello.jello_app.dto.CreatePostRequest;
+import com.jello.jello_app.dto.PostDTO;
 import com.jello.jello_app.model.Post;
 import com.jello.jello_app.model.User;
 import com.jello.jello_app.repository.PostRepository;
@@ -24,19 +25,27 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     public Post createPost(CreatePostRequest request, List<MultipartFile> images) {
-        User user = userService.getAuthenticatedUser();
 
-        Post post = new Post();
-        post.setTitle(request.getTitle());
-        post.setContent(request.getContent());
-        post.setUser(user);
+        Post savedPost = null;
+        try {
+            User user = userService.getAuthenticatedUser();
 
-        Post savedPost = postRepository.save(post);
+            Post post = new Post();
+            post.setTitle(request.getTitle());
+            post.setContent(request.getContent());
+            post.setUser(user);
 
-        if(images != null && !images.isEmpty()){
-            imageService.saveImageForPost(images, savedPost);
+            savedPost = postRepository.save(post);
+
+            if(images != null && !images.isEmpty()){
+                imageService.saveImageForPost(images, savedPost);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
 
         return savedPost;
     }
+
+
 }

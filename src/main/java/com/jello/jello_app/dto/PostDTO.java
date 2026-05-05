@@ -6,7 +6,8 @@ import java.util.List;
 
 @Data
 public class PostDTO {
+    private Long id;
     private String title;
     private String content;
-    private String postUrl;
+    private List<ImageDTO> images;
 }
