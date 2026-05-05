@@ -58,34 +58,4 @@ public class ImageServiceImpl implements ImageService {
         return imageRepository.findById(imageId)
                 .orElseThrow(() -> new RuntimeException("Image not found!"));
     }
-
-    @Override
-    public List<ImageDTO> saveImages(List<MultipartFile> files){
-        List<ImageDTO> savedImagesDTO = new ArrayList<>();
-        String buildDownloadUrl = "/api/v1/image/download/";
-
-        for (MultipartFile file : files) {
-            try{
-                Image image = new Image();
-                image.setFileName(file.getOriginalFilename());
-                image.setFileType(file.getContentType());
-                image.setImage(file.getBytes());
-
-                Image savedImage = imageRepository.save(image);
-                savedImage.setDownloadUrl(buildDownloadUrl +  savedImage.getId());
-                imageRepository.save(savedImage);
-
-                ImageDTO imageDTO = new ImageDTO();
-                imageDTO.setId(savedImage.getId());
-                imageDTO.setFileName(savedImage.getFileName());
-                imageDTO.setDownloadUrl(savedImage.getDownloadUrl());
-
-                savedImagesDTO.add(imageDTO);
-            } catch (IOException e) {
-                throw new RuntimeException("Error processing image: " + file.getOriginalFilename(), e);
-            }
-        }
-
-        return savedImagesDTO;
-    }
 }

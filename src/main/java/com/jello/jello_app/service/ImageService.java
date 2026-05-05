@@ -10,6 +10,5 @@ import java.util.List;
 
 public interface ImageService {
     List<ImageDTO> saveImageForPost(List<MultipartFile> files, Post post);
-    List<ImageDTO> saveImages(List<MultipartFile> files);
     Image getImageById(Long imageId);
 }
