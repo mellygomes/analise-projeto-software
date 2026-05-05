@@ -1,14 +1,14 @@
 package com.jello.jello_app.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.Collection;
 import java.util.HashSet;
 
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "roles")
 @NoArgsConstructor
@@ -25,5 +25,6 @@ public class Role {
     }
 
     @ManyToMany(mappedBy = "roles")
+    @JsonIgnore
     private Collection<User> users = new HashSet<>();
 }
