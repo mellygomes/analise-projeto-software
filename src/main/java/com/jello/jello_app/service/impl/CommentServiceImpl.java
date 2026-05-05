@@ -51,7 +51,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public List<CommentDTO> getCommentsFromPost(Long postId) {
+    public List<CommentDTO> getAllCommentsFromPost(Long postId) {
         List<Comment> comments = commentRepository.findByPost(postId);
 
         return comments.stream()

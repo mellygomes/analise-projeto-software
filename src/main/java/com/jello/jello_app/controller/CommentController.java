@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("${api.prefix}/comments")
@@ -26,5 +28,11 @@ public class CommentController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse(e.getMessage(), null));
         }
+    }
+
+    @GetMapping("/{postId}/all")
+    public ResponseEntity<ApiResponse> getAllCommentsFromPost(@PathVariable Long postId) {
+        List<CommentDTO> comments = commentService.getAllCommentsFromPost(postId);
+        return ResponseEntity.ok(new ApiResponse("Comments listed!", comments));
     }
 }
