@@ -62,4 +62,12 @@ public class PostServiceImpl implements PostService {
         return postRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Post not found!"));
     }
+
+    @Override
+    public void deletePost(Long id) {
+        postRepository.findById(id)
+                .ifPresentOrElse(postRepository::delete, () -> {
+                    throw new RuntimeException("Post not found!");
+                });
+    }
 }
