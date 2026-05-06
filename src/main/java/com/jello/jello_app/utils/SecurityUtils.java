@@ -30,7 +30,7 @@ public class SecurityUtils {
         return isAdmin || isCommentOwner || isPostOwner;
     }
 
-    public Boolean canDeletePost(Long postId, Authentication authentication) {
+    public Boolean canModifyPost(Long postId, Authentication authentication) {
         String username = authentication.getName();
 
         Post post = postRepository.findById(postId)
