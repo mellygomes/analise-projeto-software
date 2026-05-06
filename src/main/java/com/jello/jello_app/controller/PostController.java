@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import tools.jackson.databind.ObjectMapper;
@@ -62,4 +63,17 @@ public class PostController {
                     .body(new ApiResponse(e.getMessage(), null));
         }
     }
+
+    @GetMapping("/list")
+    public ResponseEntity<ApiResponse> listPosts() {
+        try {
+            List<PostDTO> posts = postService.getFeedPosts();
+            SecurityContextHolder.getContext().getAuthentication();
+            return ResponseEntity.ok(new ApiResponse("TUDO CERTO CHEF", posts));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(e.getMessage(), null));
+        }
+    }
+
 }
