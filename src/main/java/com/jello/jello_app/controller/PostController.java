@@ -39,6 +39,7 @@ public class PostController {
     }
 
     @DeleteMapping("/{postId}")
+    @PreAuthorize("@securityUtils.canDeletePost(#postId, authentication)")
     public ResponseEntity<ApiResponse> deletePost(@PathVariable Long postId) {
         try{
             postService.deletePost(postId);
