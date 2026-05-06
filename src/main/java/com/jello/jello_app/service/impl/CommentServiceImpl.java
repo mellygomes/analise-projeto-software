@@ -63,5 +63,13 @@ public class CommentServiceImpl implements CommentService {
                         .build())
                 .toList();
     }
+
+    @Override
+    public void deleteComment(Long commentId) {
+        commentRepository.findById(commentId)
+                .ifPresentOrElse(commentRepository::delete, () -> {
+                    throw new RuntimeException("Comment not found!");
+                });
+    }
 }
 
