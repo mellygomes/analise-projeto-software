@@ -67,6 +67,25 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public void deletePost(Long id) {
+        postRepository.findById(id)
+                .ifPresentOrElse(postRepository::delete, () -> {
+                    throw new RuntimeException("Post not found!");
+                });
+    }
+
+    @Override
+    public Post updatePost(CreatePostRequest request, Long postId) {
+        return postRepository.findById(postId)
+                .map(existingPost -> {
+                    existingPost.setTitle(request.getTitle());
+                    existingPost.setContent(request.getContent());
+                    return postRepository.save(existingPost);
+                })
+                .orElseThrow(() -> new RuntimeException("Post not found!"));
+    }
+
+    @Override
     public List<PostDTO> getFeedPosts() {
         User user = userService.getAuthenticatedUser();
         // USUARIO AUTENTICADO NAO ESTA SENDO RECEBIDO AQUI E DA ERRO
