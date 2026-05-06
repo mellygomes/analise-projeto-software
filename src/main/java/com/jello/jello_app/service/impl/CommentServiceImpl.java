@@ -68,7 +68,7 @@ public class CommentServiceImpl implements CommentService {
     public void deleteComment(Long commentId) {
         commentRepository.findById(commentId)
                 .ifPresentOrElse(commentRepository::delete, () -> {
-                    throw new RuntimeException("Comment nor found!");
+                    throw new RuntimeException("Comment not found!");
                 });
     }
 }
