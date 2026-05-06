@@ -62,5 +62,4 @@ public class PostController {
                     .body(new ApiResponse(e.getMessage(), null));
         }
     }
-
 }
