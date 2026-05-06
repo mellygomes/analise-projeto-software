@@ -70,4 +70,15 @@ public class PostServiceImpl implements PostService {
                     throw new RuntimeException("Post not found!");
                 });
     }
+
+    @Override
+    public Post updatePost(CreatePostRequest request, Long postId) {
+        return postRepository.findById(postId)
+                .map(existingPost -> {
+                    existingPost.setTitle(request.getTitle());
+                    existingPost.setContent(request.getContent());
+                    return postRepository.save(existingPost);
+                })
+                .orElseThrow(() -> new RuntimeException("Post not found!"));
+    }
 }
