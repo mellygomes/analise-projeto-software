@@ -39,11 +39,24 @@ public class PostController {
     }
 
     @DeleteMapping("/{postId}")
-    @PreAuthorize("@securityUtils.canDeletePost(#postId, authentication)")
+    @PreAuthorize("@securityUtils.canModifyPost(#postId, authentication)")
     public ResponseEntity<ApiResponse> deletePost(@PathVariable Long postId) {
         try{
             postService.deletePost(postId);
             return ResponseEntity.ok(new ApiResponse("Post deleted successfully!", null));
+        } catch (Exception e) {
+            return ResponseEntity.status(NOT_FOUND)
+                    .body(new ApiResponse(e.getMessage(), null));
+        }
+    }
+
+    @PutMapping("/{postId}")
+    @PreAuthorize("@securityUtils.canModifyPost(#postId, authentication)")
+    public ResponseEntity<ApiResponse> updatePost(@PathVariable Long postId, @RequestBody CreatePostRequest request) {
+        try{
+            Post post = postService.updatePost(request, postId);
+            PostDTO postResponse = postService.postDTOBuilder(post);
+            return ResponseEntity.ok(new ApiResponse("Post updated successfully!", postResponse));
         } catch (Exception e) {
             return ResponseEntity.status(NOT_FOUND)
                     .body(new ApiResponse(e.getMessage(), null));
