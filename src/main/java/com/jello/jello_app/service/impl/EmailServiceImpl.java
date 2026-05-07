@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class EmailServiceImpl implements EmailService {
     public static final String NEW_USER_ACCOUNT_VERIFICATION = "New user account verification";
-    public static final String PASSSWORD_RESET_REQUEST = "Reset password request";
+    public static final String PASSWORD_RESET_REQUEST = "Reset password request";
 
     private final JavaMailSender sender;
     @Value("${spring.mail.verify.host}")
@@ -40,7 +40,7 @@ public class EmailServiceImpl implements EmailService {
     public void sendPasswordResetEmail(String name, String emailTo, String token) {
         try {
             SimpleMailMessage message = new SimpleMailMessage();
-            message.setSubject(PASSSWORD_RESET_REQUEST);
+            message.setSubject(PASSWORD_RESET_REQUEST);
             message.setFrom(fromMail);
             message.setTo(emailTo);
             message.setText(getResetPasswordMessage(name, host, token));
