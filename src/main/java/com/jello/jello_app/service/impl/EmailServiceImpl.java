@@ -6,7 +6,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+
+import static com.jello.jello_app.utils.EmailUtils.getEmailMessage;
 
 @Service
 @RequiredArgsConstructor
@@ -23,6 +26,7 @@ public class EmailServiceImpl implements EmailService {
     private String fromMail;
 
     @Override
+    @Async
     public void sendNewAccountEmail(String name, String emailTo, String token) {
         try {
             SimpleMailMessage message = new SimpleMailMessage();
@@ -37,6 +41,7 @@ public class EmailServiceImpl implements EmailService {
     }
 
     @Override
+    @Async
     public void sendPasswordResetEmail(String name, String emailTo, String token) {
         try {
             SimpleMailMessage message = new SimpleMailMessage();
