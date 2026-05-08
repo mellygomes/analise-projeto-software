@@ -1,12 +1,15 @@
 package com.jello.jello_app.service.impl;
 
 import com.jello.jello_app.dto.*;
+import com.jello.jello_app.enumeration.EventType;
+import com.jello.jello_app.event.UserEvent;
 import com.jello.jello_app.model.Role;
 import com.jello.jello_app.model.User;
 import com.jello.jello_app.repository.RoleRepository;
 import com.jello.jello_app.repository.UserRepository;
 import com.jello.jello_app.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -14,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import javax.swing.text.html.Option;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -23,6 +27,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
+    private final ApplicationEventPublisher publisher;
 
     @Override
     public User register(RegisterRequest request) {
@@ -40,6 +45,9 @@ public class UserServiceImpl implements UserService {
                     user.setPassword(passwordEncoder.encode(request.getPassword()));
                     user.setProfilePicture(null);
                     user.setRoles(Set.of(roleUser));
+
+                    publisher.publishEvent(new UserEvent(user, EventType.REGISTRATION, Map.of("key", confirmation)));
+
                     return userRepository.save(user);
                 })
                 .orElseThrow(() -> new RuntimeException("User or email already registered!"));
