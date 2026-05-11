@@ -45,6 +45,7 @@ public class UserServiceImpl implements UserService {
                     user.setPassword(passwordEncoder.encode(request.getPassword()));
                     user.setProfilePicture(null);
                     user.setRoles(Set.of(roleUser));
+                    user.setBio(null);
 
                     publisher.publishEvent(new UserEvent(user, EventType.REGISTRATION, Map.of("key", confirmation)));
 
@@ -60,7 +61,7 @@ public class UserServiceImpl implements UserService {
                 .username(user.getUsername())
                 .firstName(user.getFirstName())
                 .lastName(user.getLastName())
-                .bio(null)
+                .bio(user.getBio())
                 .build();
     }
 
@@ -76,6 +77,7 @@ public class UserServiceImpl implements UserService {
                 .map(existingUser -> {
                     existingUser.setFirstName(request.getFirstName());
                     existingUser.setLastName(request.getLastName());
+                    existingUser.setBio(request.getBio());
                     existingUser.setPassword(passwordEncoder.encode(request.getPassword()));
                     return userRepository.save(existingUser);
                 })
