@@ -1,23 +1,23 @@
 package com.jello.jello_app.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import java.util.UUID;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
 @Entity
+@Table(name = "confirmations")
+@Getter
+@Setter
+@NoArgsConstructor
 public class Confirmation extends Auditable {
+
+    @Column(nullable = false, unique = true)
     private String confirmationKey;
-    @OneToOne(targetEntity = User.class, fetch = FetchType.EAGER)
+
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
     private User user;
