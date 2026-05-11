@@ -16,10 +16,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.swing.text.html.Option;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -47,7 +44,7 @@ public class UserServiceImpl implements UserService {
                     user.setRoles(Set.of(roleUser));
                     user.setBio(null);
 
-                    publisher.publishEvent(new UserEvent(user, EventType.REGISTRATION, Map.of("key", confirmation)));
+                    publisher.publishEvent(new UserEvent(user, EventType.REGISTRATION, Map.of("key", UUID.randomUUID().toString())));
 
                     return userRepository.save(user);
                 })
