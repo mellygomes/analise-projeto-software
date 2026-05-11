@@ -10,6 +10,7 @@ import com.jello.jello_app.repository.UserRepository;
 import com.jello.jello_app.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -30,25 +31,23 @@ public class UserServiceImpl implements UserService {
     public User register(RegisterRequest request) {
         Role roleUser = roleRepository.findByName("ROLE_USER")
                 .orElseThrow(() -> new RuntimeException("ROLE_USER not found!"));
-        return Optional.of(request)
-                .filter(user -> !userRepository.existsByEmail(request.getEmail()))
-                .filter(user -> !userRepository.existsByUsername(request.getUsername()))
-                .map(req -> {
-                    User user = new User();
-                    user.setFirstName(request.getFirstName());
-                    user.setLastName(request.getLastName());
-                    user.setEmail(request.getEmail());
-                    user.setUsername(request.getUsername());
-                    user.setPassword(passwordEncoder.encode(request.getPassword()));
-                    user.setProfilePicture(null);
-                    user.setRoles(Set.of(roleUser));
-                    user.setBio(null);
+        try{
+            User user = new User();
+            user.setFirstName(request.getFirstName());
+            user.setLastName(request.getLastName());
+            user.setEmail(request.getEmail());
+            user.setUsername(request.getUsername());
+            user.setPassword(passwordEncoder.encode(request.getPassword()));
+            user.setProfilePicture(null);
+            user.setRoles(Set.of(roleUser));
+            user.setBio(null);
 
-                    publisher.publishEvent(new UserEvent(user, EventType.REGISTRATION, Map.of("key", UUID.randomUUID().toString())));
+            publisher.publishEvent(new UserEvent(user, EventType.REGISTRATION, Map.of("key", UUID.randomUUID().toString())));
 
-                    return userRepository.save(user);
-                })
-                .orElseThrow(() -> new RuntimeException("User or email already registered!"));
+            return userRepository.save(user);
+        } catch (DataIntegrityViolationException e){
+            throw new RuntimeException(e.getMessage());
+        }
     }
 
     @Override
