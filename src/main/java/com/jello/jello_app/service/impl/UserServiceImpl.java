@@ -3,8 +3,10 @@ package com.jello.jello_app.service.impl;
 import com.jello.jello_app.dto.*;
 import com.jello.jello_app.enumeration.EventType;
 import com.jello.jello_app.event.UserEvent;
+import com.jello.jello_app.model.Confirmation;
 import com.jello.jello_app.model.Role;
 import com.jello.jello_app.model.User;
+import com.jello.jello_app.repository.ConfirmationRepository;
 import com.jello.jello_app.repository.RoleRepository;
 import com.jello.jello_app.repository.UserRepository;
 import com.jello.jello_app.service.UserService;
@@ -26,6 +28,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
     private final ApplicationEventPublisher publisher;
+    private final ConfirmationRepository confirmationRepository;
 
     @Override
     public User register(RegisterRequest request) {
@@ -41,10 +44,14 @@ public class UserServiceImpl implements UserService {
             user.setProfilePicture(null);
             user.setRoles(Set.of(roleUser));
             user.setBio(null);
+            User savedUser = userRepository.save(user);
 
-            publisher.publishEvent(new UserEvent(user, EventType.REGISTRATION, Map.of("key", UUID.randomUUID().toString())));
+            Confirmation confirmation = new Confirmation((savedUser));
+            confirmationRepository.save(confirmation);
 
-            return userRepository.save(user);
+            publisher.publishEvent(new UserEvent(savedUser, EventType.REGISTRATION, Map.of("key", confirmation.getConfirmationKey())));
+
+            return savedUser;
         } catch (DataIntegrityViolationException e){
             throw new RuntimeException(e.getMessage());
         }

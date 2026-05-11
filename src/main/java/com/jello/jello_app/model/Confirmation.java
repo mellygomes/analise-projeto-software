@@ -16,7 +16,7 @@ import java.util.UUID;
 @Builder
 @Entity
 public class Confirmation extends Auditable {
-    private String key;
+    private String confirmationKey;
     @OneToOne(targetEntity = User.class, fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id", nullable = false)
     @OnDelete(action = OnDeleteAction.CASCADE)
@@ -24,6 +24,6 @@ public class Confirmation extends Auditable {
 
     public Confirmation(User user) {
         this.user = user;
-        this.key = UUID.randomUUID().toString();
+        this.confirmationKey = UUID.randomUUID().toString();
     }
 }
