@@ -22,6 +22,7 @@ public class User {
     private String firstName;
     private String lastName;
     private String bio;
+    private Boolean enabled;
 
     @Column(unique = true)
     private String email;
