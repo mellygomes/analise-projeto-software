@@ -150,4 +150,12 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new RuntimeException("User not found!"));
     }
 
+    @Override
+    public void verifyAccountKey(String token) {
+        Confirmation confirmation = confirmationRepository.findByConfirmationKey(token);
+        User user = userRepository.findByEmail(confirmation.getUser().getEmail());
+        user.setEnabled(true);
+        userRepository.save(user);
+        confirmationRepository.delete(confirmation);
+    }
 }
