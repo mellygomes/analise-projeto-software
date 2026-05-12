@@ -7,5 +7,7 @@ CREATE TABLE public.users
     password VARCHAR(255),
     username VARCHAR(255) UNIQUE,
     bio VARCHAR(255),
+    enabled BOOLEAN NOT NULL DEFAULT FALSE,
+    last_login TIMESTAMP(6) WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     profile_picture BYTEA
 );
