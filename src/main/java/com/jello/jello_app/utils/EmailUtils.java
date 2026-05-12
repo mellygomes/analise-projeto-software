@@ -11,8 +11,9 @@ public class EmailUtils {
 
     public static String getResetPasswordMessage(String name, String host, String token) {
         return "Hello" + name + ",\n\n" +
-                "Your new account has been created. " +
-                "Please click on the link below to verify your account.\n\n" +
+                "This is your link to reset password." +
+                "If you did not do this request, disconsider this email!\n" +
+                "Click on the link below to create a new password:\n\n" +
                 getResetPasswordUrl(host, token) +
                 "\n\nThe Support Team";
     }
