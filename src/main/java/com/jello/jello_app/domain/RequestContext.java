@@ -5,7 +5,7 @@ public class RequestContext {
 
     private RequestContext() {}
 
-    public static void start() {
+    public static void clear() {
         USER_ID.remove(); }
 
     public static void setUserId(Long userId) { USER_ID.set(userId); }
