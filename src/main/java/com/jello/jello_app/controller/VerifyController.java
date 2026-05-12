@@ -5,6 +5,7 @@ import com.jello.jello_app.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class VerifyController {
     private final UserService userService;
 
+    @GetMapping("/account")
     public ResponseEntity<ApiResponse> verifyAccount(@RequestParam String token) {
         userService.verifyAccountKey(token);
         return ResponseEntity.ok().body(new ApiResponse("Account verified!", null));

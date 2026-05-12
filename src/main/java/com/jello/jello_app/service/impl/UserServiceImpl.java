@@ -44,6 +44,7 @@ public class UserServiceImpl implements UserService {
             user.setProfilePicture(null);
             user.setRoles(Set.of(roleUser));
             user.setBio(null);
+            user.setEnabled(false);
             User savedUser = userRepository.save(user);
 
             Confirmation confirmation = new Confirmation((savedUser));
@@ -152,7 +153,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void verifyAccountKey(String token) {
-        Confirmation confirmation = confirmationRepository.findByConfirmationKey(token);
+        Confirmation confirmation = confirmationRepository.findByConfirmationKey(token)
+                .orElseThrow(() -> new RuntimeException("Confirmation not found!"));
         User user = userRepository.findByEmail(confirmation.getUser().getEmail());
         user.setEnabled(true);
         userRepository.save(user);
