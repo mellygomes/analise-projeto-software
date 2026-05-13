@@ -6,6 +6,7 @@ import com.jello.jello_app.dto.PostDTO;
 import com.jello.jello_app.model.Post;
 import com.jello.jello_app.service.PostService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -66,11 +67,13 @@ public class PostController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<ApiResponse> listPosts() {
+    public ResponseEntity<ApiResponse> listPosts(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ) {
         try {
-            List<PostDTO> posts = postService.getFeedPosts();
-
-            return ResponseEntity.ok(new ApiResponse("TUDO CERTO CHEF", posts));
+            Page<PostDTO> posts = postService.getFeedPosts(page, size);
+            return ResponseEntity.ok(new ApiResponse("Posts loaded successfully!", posts));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse(e.getMessage(), null));
