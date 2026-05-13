@@ -19,6 +19,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
+
     private final ImageService imageService;
     private final UserService userService;
     private final PostRepository postRepository;
