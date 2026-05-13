@@ -1,4 +1,8 @@
-# App Name
+# Jello App
+
+## [Clique aqui para acessar a documentação completa do projeto](https://drive.google.com/drive/folders/1m84KH6vI4fKN5Tof0ffgr2CzluHC9jAY?usp=drive_link)
+
+### [Protótipo de Telas no Figma](https://www.figma.com/design/PYbaEizRwmUbTslQfBDjFh/Projeto---Analise-e-Projeto-de-Software?node-id=3-2&p=f&t=lgYB01xV2mJvXPzb-0)
 
 ### Finalidade
 A finalidade deste documento é definir a visão que os Stakeholders têm do produto, em termos das funcionalidades e necessidades do sistema para atendê-las. 
