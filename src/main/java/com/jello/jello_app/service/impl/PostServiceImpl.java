@@ -11,6 +11,10 @@ import com.jello.jello_app.service.PostService;
 import com.jello.jello_app.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -86,24 +90,28 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public List<PostDTO> getFeedPosts() {
+    public Page<PostDTO> getFeedPosts(int page, int size) {
         User user = userService.getAuthenticatedUser();
+
+        Pageable pageable = PageRequest.of(
+                page,
+                size,
+                Sort.by("createdAt").descending()
+        );
 
         List<Long> followingIds = followRepository.findUsersFollowedBy(user.getId())
                 .stream()
                 .map(User::getId)
                 .toList();
 
-        List<Post> posts;
+        Page<Post> posts;
 
         if (followingIds.isEmpty()) {
-            posts = postRepository.findAllByOrderByCreatedAtDesc();
+            posts = postRepository.findAllByOrderByCreatedAtDesc(pageable);
         } else {
-            posts = postRepository.findFeedPosts(followingIds);
+            posts = postRepository.findFeedPosts(followingIds, pageable);
         }
 
-        return posts.stream()
-                .map(this::postDTOBuilder)
-                .toList();
+        return posts.map(this::postDTOBuilder);
     }
 }

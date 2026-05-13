@@ -3,6 +3,7 @@ package com.jello.jello_app.service;
 import com.jello.jello_app.dto.CreatePostRequest;
 import com.jello.jello_app.dto.PostDTO;
 import com.jello.jello_app.model.Post;
+import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -13,5 +14,5 @@ public interface PostService {
     Post getPostById(Long id);
     void deletePost(Long id);
     Post updatePost(CreatePostRequest request, Long postId);
-    List<PostDTO> getFeedPosts();
+    Page<PostDTO> getFeedPosts(int page, int size);
 }
