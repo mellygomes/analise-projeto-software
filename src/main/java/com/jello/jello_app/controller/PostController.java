@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import tools.jackson.databind.ObjectMapper;
@@ -25,7 +24,8 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping(value = "/create", consumes = "multipart/form-data")
-    public ResponseEntity<ApiResponse> createPost(@RequestPart(value = "images") List<MultipartFile> images, @RequestPart("post") String postRequest) {
+    public ResponseEntity<ApiResponse> createPost(@RequestPart(value = "images") List<MultipartFile> images,
+                                                  @RequestPart("post") String postRequest) {
         ObjectMapper mapper = new ObjectMapper();
         CreatePostRequest request = mapper.readValue(postRequest, CreatePostRequest.class);
 
@@ -42,7 +42,7 @@ public class PostController {
     @DeleteMapping("/{postId}")
     @PreAuthorize("@securityUtils.canModifyPost(#postId, authentication)")
     public ResponseEntity<ApiResponse> deletePost(@PathVariable Long postId) {
-        try{
+        try {
             postService.deletePost(postId);
             return ResponseEntity.ok(new ApiResponse("Post deleted successfully!", null));
         } catch (Exception e) {
@@ -54,7 +54,7 @@ public class PostController {
     @PutMapping("/{postId}")
     @PreAuthorize("@securityUtils.canModifyPost(#postId, authentication)")
     public ResponseEntity<ApiResponse> updatePost(@PathVariable Long postId, @RequestBody CreatePostRequest request) {
-        try{
+        try {
             Post post = postService.updatePost(request, postId);
             PostDTO postResponse = postService.postDTOBuilder(post);
             return ResponseEntity.ok(new ApiResponse("Post updated successfully!", postResponse));
@@ -69,7 +69,7 @@ public class PostController {
     public ResponseEntity<ApiResponse> listPosts() {
         try {
             List<PostDTO> posts = postService.getFeedPosts();
-            SecurityContextHolder.getContext().getAuthentication();
+
             return ResponseEntity.ok(new ApiResponse("TUDO CERTO CHEF", posts));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

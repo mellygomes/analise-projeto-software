@@ -11,7 +11,6 @@ import com.jello.jello_app.service.PostService;
 import com.jello.jello_app.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -40,7 +39,7 @@ public class PostServiceImpl implements PostService {
 
             savedPost = postRepository.save(post);
 
-            if(images != null && !images.isEmpty()){
+            if (images != null && !images.isEmpty()) {
                 imageService.saveImageForPost(images, savedPost);
             }
         } catch (Exception e) {
@@ -88,8 +87,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public List<PostDTO> getFeedPosts() {
         User user = userService.getAuthenticatedUser();
-        // USUARIO AUTENTICADO NAO ESTA SENDO RECEBIDO AQUI E DA ERRO
-        SecurityContextHolder.getContext().getAuthentication();
+
         List<Long> followingIds = followRepository.findUsersFollowedBy(user.getId())
                 .stream()
                 .map(User::getId)

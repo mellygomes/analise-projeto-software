@@ -1,38 +1,29 @@
 package com.jello.jello_app.controller;
 
 import com.jello.jello_app.dto.ApiResponse;
-import com.jello.jello_app.dto.RegisterRequest;
 import com.jello.jello_app.dto.UpdateUserRequest;
 import com.jello.jello_app.dto.UserDTO;
 import com.jello.jello_app.model.User;
-import com.jello.jello_app.security.jwt.JwtUtils;
 import com.jello.jello_app.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Objects;
-
-import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("${api.prefix}/users")
 public class UserController {
-    private final UserService userService;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final UserService userService;
 
     @GetMapping("/{userId}")
     @PreAuthorize("#userId == authentication.principal.id or hasRole('ADMIN')")
-    public ResponseEntity<ApiResponse> getUserById(@PathVariable Long userId){
+    public ResponseEntity<ApiResponse> getUserById(@PathVariable Long userId) {
         try {
             User user = userService.getUserById(userId);
 
@@ -59,7 +50,7 @@ public class UserController {
 
     @DeleteMapping("/{userId}")
     @PreAuthorize("#userId == authentication.principal.id or hasRole('ADMIN')")
-    public ResponseEntity<ApiResponse> deleteUser (@PathVariable Long userId){
+    public ResponseEntity<ApiResponse> deleteUser(@PathVariable Long userId) {
         try {
             userService.deleteUser(userId);
             return ResponseEntity.ok(new ApiResponse("Delete success!", null));
@@ -69,9 +60,5 @@ public class UserController {
         }
     }
 
-    @GetMapping("/teste")
-    public String teste() {
-        System.out.println(passwordEncoder.encode("0123456789"));
-        return "toma";
-    }
+
 }
