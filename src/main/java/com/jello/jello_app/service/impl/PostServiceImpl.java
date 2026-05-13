@@ -4,6 +4,7 @@ import com.jello.jello_app.dto.CreatePostRequest;
 import com.jello.jello_app.dto.PostDTO;
 import com.jello.jello_app.model.Post;
 import com.jello.jello_app.model.User;
+import com.jello.jello_app.repository.FollowRepository;
 import com.jello.jello_app.repository.PostRepository;
 import com.jello.jello_app.service.ImageService;
 import com.jello.jello_app.service.PostService;
@@ -18,9 +19,11 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
+
     private final ImageService imageService;
     private final UserService userService;
     private final PostRepository postRepository;
+    private final FollowRepository followRepository;
 
     @Override
     @Transactional
@@ -37,7 +40,7 @@ public class PostServiceImpl implements PostService {
 
             savedPost = postRepository.save(post);
 
-            if(images != null && !images.isEmpty()){
+            if (images != null && !images.isEmpty()) {
                 imageService.saveImageForPost(images, savedPost);
             }
         } catch (Exception e) {
@@ -80,5 +83,27 @@ public class PostServiceImpl implements PostService {
                     return postRepository.save(existingPost);
                 })
                 .orElseThrow(() -> new RuntimeException("Post not found!"));
+    }
+
+    @Override
+    public List<PostDTO> getFeedPosts() {
+        User user = userService.getAuthenticatedUser();
+
+        List<Long> followingIds = followRepository.findUsersFollowedBy(user.getId())
+                .stream()
+                .map(User::getId)
+                .toList();
+
+        List<Post> posts;
+
+        if (followingIds.isEmpty()) {
+            posts = postRepository.findAllByOrderByCreatedAtDesc();
+        } else {
+            posts = postRepository.findFeedPosts(followingIds);
+        }
+
+        return posts.stream()
+                .map(this::postDTOBuilder)
+                .toList();
     }
 }

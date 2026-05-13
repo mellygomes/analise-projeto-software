@@ -24,7 +24,8 @@ public class PostController {
     private final PostService postService;
 
     @PostMapping(value = "/create", consumes = "multipart/form-data")
-    public ResponseEntity<ApiResponse> createPost(@RequestPart(value = "images") List<MultipartFile> images, @RequestPart("post") String postRequest) {
+    public ResponseEntity<ApiResponse> createPost(@RequestPart(value = "images") List<MultipartFile> images,
+                                                  @RequestPart("post") String postRequest) {
         ObjectMapper mapper = new ObjectMapper();
         CreatePostRequest request = mapper.readValue(postRequest, CreatePostRequest.class);
 
@@ -41,7 +42,7 @@ public class PostController {
     @DeleteMapping("/{postId}")
     @PreAuthorize("@securityUtils.canModifyPost(#postId, authentication)")
     public ResponseEntity<ApiResponse> deletePost(@PathVariable Long postId) {
-        try{
+        try {
             postService.deletePost(postId);
             return ResponseEntity.ok(new ApiResponse("Post deleted successfully!", null));
         } catch (Exception e) {
@@ -53,7 +54,7 @@ public class PostController {
     @PutMapping("/{postId}")
     @PreAuthorize("@securityUtils.canModifyPost(#postId, authentication)")
     public ResponseEntity<ApiResponse> updatePost(@PathVariable Long postId, @RequestBody CreatePostRequest request) {
-        try{
+        try {
             Post post = postService.updatePost(request, postId);
             PostDTO postResponse = postService.postDTOBuilder(post);
             return ResponseEntity.ok(new ApiResponse("Post updated successfully!", postResponse));
@@ -61,5 +62,19 @@ public class PostController {
             return ResponseEntity.status(NOT_FOUND)
                     .body(new ApiResponse(e.getMessage(), null));
         }
+
     }
+
+    @GetMapping("/list")
+    public ResponseEntity<ApiResponse> listPosts() {
+        try {
+            List<PostDTO> posts = postService.getFeedPosts();
+
+            return ResponseEntity.ok(new ApiResponse("TUDO CERTO CHEF", posts));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(e.getMessage(), null));
+        }
+    }
+
 }

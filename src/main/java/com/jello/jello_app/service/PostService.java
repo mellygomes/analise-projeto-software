@@ -13,4 +13,5 @@ public interface PostService {
     Post getPostById(Long id);
     void deletePost(Long id);
     Post updatePost(CreatePostRequest request, Long postId);
+    List<PostDTO> getFeedPosts();
 }
