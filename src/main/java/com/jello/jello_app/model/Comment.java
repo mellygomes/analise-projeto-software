@@ -12,10 +12,7 @@ import lombok.Setter;
 @Table(name = "comments")
 @NoArgsConstructor
 @AllArgsConstructor
-public class Comment {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Comment extends Auditable {
 
     private String content;
 

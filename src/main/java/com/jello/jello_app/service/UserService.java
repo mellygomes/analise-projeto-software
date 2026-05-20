@@ -14,4 +14,5 @@ public interface UserService {
     User revokeAdmin(Long userId);
     User grantModerator(Long userId);
     User revokeModerator(Long userId);
+    void verifyAccountKey(String token);
 }

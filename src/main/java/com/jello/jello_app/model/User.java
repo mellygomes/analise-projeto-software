@@ -14,13 +14,12 @@ import java.util.List;
 @Table(name = "users")
 @NoArgsConstructor
 @AllArgsConstructor
-public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class User extends Auditable{
 
     private String firstName;
     private String lastName;
+    private String bio;
+    private Boolean enabled;
 
     @Column(unique = true)
     private String email;

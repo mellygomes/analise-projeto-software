@@ -48,7 +48,8 @@ public class AuthController {
         try {
             User user = userService.register(request);
             UserDTO userDTO = userService.userDtoBuilder(user);
-            return ResponseEntity.ok(new ApiResponse("Registered!", userDTO));
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(new ApiResponse("Registered!", userDTO));
         }catch (Exception e){
             return ResponseEntity.status(CONFLICT)
                     .body(new ApiResponse(e.getMessage(), null));
