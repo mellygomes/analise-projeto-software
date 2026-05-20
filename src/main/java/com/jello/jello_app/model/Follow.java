@@ -27,5 +27,4 @@ public class Follow extends Auditable{
     @ManyToOne
     @JoinColumn(name = "following_id")
     private User following;
-
 }
