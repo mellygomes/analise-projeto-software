@@ -8,7 +8,6 @@ CREATE TABLE public.follows
     updated_at TIMESTAMP(6) WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     follower_id BIGINT NOT NULL,
     following_id BIGINT NOT NULL,
-    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT fk_follower
         FOREIGN KEY (follower_id)

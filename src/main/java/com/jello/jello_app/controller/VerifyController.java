@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/verify")
@@ -18,7 +20,12 @@ public class VerifyController {
 
     @GetMapping("/account")
     public ResponseEntity<ApiResponse> verifyAccount(@RequestParam String token) {
-        userService.verifyAccountKey(token);
-        return ResponseEntity.ok().body(new ApiResponse("Account verified!", null));
+        try {
+            userService.verifyAccountKey(token);
+            return ResponseEntity.ok().body(new ApiResponse("Account verified!", null));
+        } catch (Exception e) {
+            return ResponseEntity.status(NOT_FOUND)
+                    .body(new ApiResponse("Account not found!", null));
+        }
     }
 }
