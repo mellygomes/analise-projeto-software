@@ -63,6 +63,7 @@ public class PostController {
             return ResponseEntity.status(NOT_FOUND)
                     .body(new ApiResponse(e.getMessage(), null));
         }
+
     }
 
     @GetMapping("/list")
