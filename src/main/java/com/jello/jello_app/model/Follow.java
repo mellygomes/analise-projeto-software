@@ -18,11 +18,7 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Follow {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Follow extends Auditable{
 
     @ManyToOne
     @JoinColumn(name = "follower_id")
@@ -31,9 +27,5 @@ public class Follow {
     @ManyToOne
     @JoinColumn(name = "following_id")
     private User following;
-
-    @Column(name = "created_at")
-    @CreationTimestamp
-    private LocalDateTime createdAt;
 
 }
