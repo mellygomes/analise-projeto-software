@@ -25,7 +25,11 @@ public abstract class Auditable {
     @Column(name = "id", updatable = false)
     private Long id;
     private String referenceId = new AlternativeJdkIdGenerator().generateId().toString();
-    private Long createdBy;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User createdBy;
+
     private Long updatedBy;
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
