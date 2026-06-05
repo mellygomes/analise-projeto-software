@@ -6,7 +6,6 @@ CREATE TABLE public.posts
     updated_by BIGINT,
     created_at TIMESTAMP(6) WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP(6) WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    user_id BIGINT NOT NULL,
     title VARCHAR(255),
     content VARCHAR(255),
     CONSTRAINT fk_posts_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
