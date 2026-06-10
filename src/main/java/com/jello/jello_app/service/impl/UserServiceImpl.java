@@ -1,5 +1,6 @@
 package com.jello.jello_app.service.impl;
 
+import com.jello.jello_app.domain.RequestContext;
 import com.jello.jello_app.dto.*;
 import com.jello.jello_app.enumeration.EventType;
 import com.jello.jello_app.event.UserEvent;
@@ -46,6 +47,10 @@ public class UserServiceImpl implements UserService {
             user.setBio(null);
             user.setEnabled(false);
             User savedUser = userRepository.save(user);
+            if(RequestContext.getUserId() == null) {
+                user.setCreatedBy(savedUser);
+                user.setUpdatedBy(savedUser);
+            }
 
             Confirmation confirmation = new Confirmation((savedUser));
             confirmationRepository.save(confirmation);
