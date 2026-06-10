@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.sql.Blob;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -23,6 +24,8 @@ public class User extends Auditable{
 
     @Column(unique = true)
     private String email;
+
+    private LocalDateTime lastLogin;
 
     @Column(unique = true)
     private String username;

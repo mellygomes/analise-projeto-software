@@ -5,6 +5,7 @@ import com.jello.jello_app.repository.UserRepository;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,19 +15,18 @@ import java.util.Optional;
 
 @Component("auditorProvider")
 @RequiredArgsConstructor
-public class AuditorAwareImpl implements AuditorAware<User> {
-
-    @PersistenceContext
+public class AuditorAwareImpl implements AuditorAware<Long> {
+    @Autowired
     private EntityManager entityManager;
 
     @Override
-    public Optional<User> getCurrentAuditor() {
+    public Optional<Long> getCurrentAuditor() {
         Long userId = RequestContext.getUserId();
 
         if (userId == null) {
             return Optional.empty();
         }
 
-        return Optional.of(entityManager.getReference(User.class, userId));
+        return Optional.ofNullable(userId);
     }
 }

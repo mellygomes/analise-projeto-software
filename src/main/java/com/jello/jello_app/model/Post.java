@@ -16,10 +16,6 @@ import java.util.List;
 @Table(name = "posts")
 public class Post extends Auditable{
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
-
     private String title;
     private String content;
 

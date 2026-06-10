@@ -12,7 +12,9 @@ import com.jello.jello_app.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -20,6 +22,7 @@ public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
     private final UserService userService;
     private final PostService postService;
+    private final UserRepository userRepository;
 
     @Override
     public Comment addComment(String content, Long postId) {
@@ -30,7 +33,7 @@ public class CommentServiceImpl implements CommentService {
         try{
             comment.setContent(content);
             comment.setPost(post);
-            comment.setUser(user);
+            comment.setCreatedBy(user.getId());
 
             commentRepository.save(comment);
         } catch (Exception e){
@@ -42,10 +45,11 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentDTO commentDTOBuilder(Comment comment) {
+        Optional<User> user = userRepository.findById(comment.getCreatedBy());
         return CommentDTO.builder()
                 .id(comment.getId())
                 .postId(comment.getPost().getId())
-                .user(comment.getUser().getUsername())
+                .user(user.get().getUsername())
                 .content(comment.getContent())
                 .build();
     }
@@ -53,15 +57,20 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public List<CommentDTO> getAllCommentsFromPost(Post postId) {
         List<Comment> comments = commentRepository.findByPost(postId);
+        List<CommentDTO> listComment = new ArrayList<>();
 
-        return comments.stream()
-                .map(com -> CommentDTO.builder()
-                        .id(com.getId())
-                        .postId(com.getPost().getId())
-                        .user(com.getUser().getUsername())
-                        .content(com.getContent())
-                        .build())
-                .toList();
+        for(Comment com : comments) {
+            Optional<User> user = userRepository.findById(com.getCreatedBy());
+            listComment.add(CommentDTO.builder()
+                .id(com.getId())
+                .postId(com.getPost().getId())
+                .user(user.get().getUsername())
+                .content(com.getContent())
+                .build()
+            );
+        }
+
+        return listComment;
     }
 
     @Override
