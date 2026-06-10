@@ -1,6 +1,7 @@
 CREATE TABLE public.confirmations
 (
     id BIGINT NOT NULL PRIMARY KEY DEFAULT nextval('primary_key_seq'),
+    user_id BIGINT NOT NULL,
     reference_id VARCHAR(255) UNIQUE NOT NULL,
     created_by BIGINT,
     updated_by BIGINT,
