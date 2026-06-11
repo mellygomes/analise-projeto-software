@@ -33,7 +33,6 @@ public class CommentServiceImpl implements CommentService {
         try{
             comment.setContent(content);
             comment.setPost(post);
-            comment.setCreatedBy(user.getId());
 
             commentRepository.save(comment);
         } catch (Exception e){
@@ -45,11 +44,10 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public CommentDTO commentDTOBuilder(Comment comment) {
-        Optional<User> user = userRepository.findById(comment.getCreatedBy());
         return CommentDTO.builder()
                 .id(comment.getId())
                 .postId(comment.getPost().getId())
-                .user(user.get().getUsername())
+                .user(comment.getUser().getUsername())
                 .content(comment.getContent())
                 .build();
     }
@@ -57,20 +55,15 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public List<CommentDTO> getAllCommentsFromPost(Post postId) {
         List<Comment> comments = commentRepository.findByPost(postId);
-        List<CommentDTO> listComment = new ArrayList<>();
 
-        for(Comment com : comments) {
-            Optional<User> user = userRepository.findById(com.getCreatedBy());
-            listComment.add(CommentDTO.builder()
-                .id(com.getId())
-                .postId(com.getPost().getId())
-                .user(user.get().getUsername())
-                .content(com.getContent())
-                .build()
-            );
-        }
-
-        return listComment;
+        return comments.stream()
+                .map(com -> CommentDTO.builder()
+                        .id(com.getId())
+                        .postId(com.getPost().getId())
+                        .user(com.getUser().getUsername())
+                        .content(com.getContent())
+                        .build())
+                .toList();
     }
 
     @Override
