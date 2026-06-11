@@ -28,10 +28,6 @@ public class Follow {
     @Column(name = "id", updatable = false)
     private Long id;
 
-    @CreatedBy
-    @Column(name = "created_by")
-    private Long createdBy;
-
     @CreatedDate
     @Column(name = "created_at")
     private LocalDateTime createdAt;
