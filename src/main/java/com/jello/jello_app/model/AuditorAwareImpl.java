@@ -16,8 +16,6 @@ import java.util.Optional;
 @Component("auditorProvider")
 @RequiredArgsConstructor
 public class AuditorAwareImpl implements AuditorAware<Long> {
-    @Autowired
-    private EntityManager entityManager;
 
     @Override
     public Optional<Long> getCurrentAuditor() {

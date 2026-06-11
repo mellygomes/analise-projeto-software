@@ -40,7 +40,6 @@ public class PostServiceImpl implements PostService {
             Post post = new Post();
             post.setTitle(request.getTitle());
             post.setContent(request.getContent());
-            post.setCreatedBy(user.getId());
 
             savedPost = postRepository.save(post);
 

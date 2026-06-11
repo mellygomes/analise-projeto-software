@@ -25,18 +25,12 @@ public class SecurityUtils {
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new RuntimeException("Comment not found!"));
 
-        User commentOwner = userRepository.findById(comment.getCreatedBy())
-                .orElseThrow(() -> new RuntimeException("Comment owner not found"));
-
-        User postOwner = userRepository.findById(comment.getPost().getCreatedBy())
-                .orElseThrow(() -> new RuntimeException("Post owner not found"));
-
         Boolean isAdmin = authentication.getAuthorities().stream()
                 .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
 
-        Boolean isCommentOwner = commentOwner.getUsername().equals(username);
+        Boolean isCommentOwner = comment.getUser().getUsername().equals(username);
 
-        Boolean isPostOwner = postOwner.getUsername().equals(username);
+        Boolean isPostOwner = comment.getPost().getUser().getUsername().equals(username);
 
         return isAdmin || isCommentOwner || isPostOwner;
     }
@@ -47,13 +41,10 @@ public class SecurityUtils {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new RuntimeException("Post not found!"));
 
-        User postOwner = userRepository.findById(post.getCreatedBy())
-                .orElseThrow(() -> new RuntimeException("Post owner not found"));
-
         Boolean isAdmin = authentication.getAuthorities().stream()
                 .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
 
-        Boolean isPostOwner = postOwner.getUsername().equals(username);
+        Boolean isPostOwner = post.getUser().getUsername().equals(username);
 
         return isAdmin || isPostOwner;
     }
