@@ -17,7 +17,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             FROM Post p
             ORDER BY
                 CASE
-                    WHEN p.user.id IN :followingIds THEN 0
+                    WHEN p.createdBy IN :followingIds THEN 0
                     ELSE 1
                 END,
                 p.createdAt DESC

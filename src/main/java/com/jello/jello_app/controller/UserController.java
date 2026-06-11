@@ -43,9 +43,7 @@ public class UserController {
             User user = userService.updateUser(request, userId);
             UserDTO userDto = userService.userDtoBuilder(user);
             return ResponseEntity.ok(new ApiResponse("Updated!", userDto));
-        } catch (Exception e) {
-            e.printStackTrace();
-
+        } catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse(e.getMessage(), null));
         }
