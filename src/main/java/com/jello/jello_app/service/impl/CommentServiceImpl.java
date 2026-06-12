@@ -33,6 +33,7 @@ public class CommentServiceImpl implements CommentService {
         try{
             comment.setContent(content);
             comment.setPost(post);
+            comment.setUser(user);
 
             commentRepository.save(comment);
         } catch (Exception e){
