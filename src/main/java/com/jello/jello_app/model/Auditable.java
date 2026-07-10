@@ -1,12 +1,12 @@
 package com.jello.jello_app.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.jello.jello_app.domain.RequestContext;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.antlr.v4.runtime.misc.NotNull;
+import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.util.AlternativeJdkIdGenerator;
@@ -25,30 +25,19 @@ public abstract class Auditable {
     @Column(name = "id", updatable = false)
     private Long id;
     private String referenceId = new AlternativeJdkIdGenerator().generateId().toString();
+
+    @CreatedBy
+    @JoinColumn(name = "created_by")
     private Long createdBy;
+
+    @LastModifiedBy
+    @JoinColumn(name = "updated_by")
     private Long updatedBy;
+
     @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
     @LastModifiedDate
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
-
-    @PrePersist
-    public void beforePersists(){
-        var userId = RequestContext.getUserId();
-
-        setCreatedAt(LocalDateTime.now());
-        setCreatedBy(userId != null ? userId : 0L);
-        setUpdatedBy(userId != null ? userId : 0L);
-        setUpdatedAt(LocalDateTime.now());
-    }
-
-    @PreUpdate
-    public void beforeUpdate(){
-        var userId = RequestContext.getUserId();
-
-        setUpdatedAt(LocalDateTime.now());
-        setUpdatedBy(userId != null ? userId : 0L);
-    }
 }

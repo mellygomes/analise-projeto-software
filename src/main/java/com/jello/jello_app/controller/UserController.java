@@ -7,6 +7,7 @@ import com.jello.jello_app.model.User;
 import com.jello.jello_app.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -42,8 +43,8 @@ public class UserController {
             User user = userService.updateUser(request, userId);
             UserDTO userDto = userService.userDtoBuilder(user);
             return ResponseEntity.ok(new ApiResponse("Updated!", userDto));
-        } catch (Exception e) {
-            return ResponseEntity.status(NOT_FOUND)
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse(e.getMessage(), null));
         }
     }

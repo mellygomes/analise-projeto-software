@@ -10,5 +10,7 @@ CREATE TABLE public.comments
     user_id BIGINT NOT NULL,
     content VARCHAR(255),
     CONSTRAINT fk_comments_post FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE,
-    CONSTRAINT fk_comments_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    CONSTRAINT fk_comments_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    CONSTRAINT fk_comments_user_created_by FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE CASCADE,
+    CONSTRAINT fk_comments_user_updated_by FOREIGN KEY (updated_by) REFERENCES users(id) ON DELETE CASCADE
 );

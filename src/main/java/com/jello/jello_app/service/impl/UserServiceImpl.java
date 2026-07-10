@@ -1,5 +1,6 @@
 package com.jello.jello_app.service.impl;
 
+import com.jello.jello_app.domain.RequestContext;
 import com.jello.jello_app.dto.*;
 import com.jello.jello_app.enumeration.EventType;
 import com.jello.jello_app.event.UserEvent;
@@ -19,6 +20,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.swing.text.html.Option;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -46,6 +48,10 @@ public class UserServiceImpl implements UserService {
             user.setBio(null);
             user.setEnabled(false);
             User savedUser = userRepository.save(user);
+            if(RequestContext.getUserId() == null) {
+                user.setCreatedBy(savedUser.getId());
+                user.setUpdatedBy(savedUser.getId());
+            }
 
             Confirmation confirmation = new Confirmation((savedUser));
             confirmationRepository.save(confirmation);
@@ -159,5 +165,12 @@ public class UserServiceImpl implements UserService {
         user.setEnabled(true);
         userRepository.save(user);
         confirmationRepository.delete(confirmation);
+    }
+
+    @Override
+    public void updateLogin(String username) {
+        User user = userRepository.findByUsername(username);
+        user.setLastLogin(LocalDateTime.now());
+        userRepository.save(user);
     }
 }

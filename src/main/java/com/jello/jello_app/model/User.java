@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.sql.Blob;
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -24,6 +25,8 @@ public class User extends Auditable{
     @Column(unique = true)
     private String email;
 
+    private LocalDateTime lastLogin;
+
     @Column(unique = true)
     private String username;
 
@@ -32,7 +35,7 @@ public class User extends Auditable{
     @Column(columnDefinition = "BYTEA")
     private byte[] profilePicture;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "createdBy", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Post> posts;
 
     @ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})

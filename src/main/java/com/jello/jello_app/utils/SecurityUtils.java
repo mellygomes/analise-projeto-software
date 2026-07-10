@@ -2,16 +2,21 @@ package com.jello.jello_app.utils;
 
 import com.jello.jello_app.model.Comment;
 import com.jello.jello_app.model.Post;
+import com.jello.jello_app.model.User;
 import com.jello.jello_app.repository.CommentRepository;
 import com.jello.jello_app.repository.PostRepository;
+import com.jello.jello_app.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
+
+import java.util.Optional;
 
 @Component("securityUtils")
 @RequiredArgsConstructor
 public class SecurityUtils {
     private final CommentRepository commentRepository;
+    private final UserRepository userRepository;
     private final PostRepository postRepository;
 
     public Boolean canDeleteComment(Long commentId, Authentication authentication) {

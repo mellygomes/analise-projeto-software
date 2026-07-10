@@ -9,6 +9,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 @RequiredArgsConstructor
 public class FollowServiceImpl implements FollowService {
@@ -33,6 +35,7 @@ public class FollowServiceImpl implements FollowService {
         Follow follow = new Follow();
         follow.setFollower(follower);
         follow.setFollowing(following);
+        follow.setCreatedAt(LocalDateTime.now());
 
         followRepository.save(follow);
     }

@@ -4,10 +4,12 @@ CREATE TABLE public.posts
     reference_id VARCHAR(255) UNIQUE NOT NULL,
     created_by BIGINT,
     updated_by BIGINT,
+    user_id BIGINT NOT NULL,
     created_at TIMESTAMP(6) WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP(6) WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    user_id BIGINT NOT NULL,
     title VARCHAR(255),
     content VARCHAR(255),
-    CONSTRAINT fk_posts_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    CONSTRAINT fk_posts_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    CONSTRAINT fk_posts_user_created_by FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE CASCADE,
+    CONSTRAINT fk_posts_user_updated_by FOREIGN KEY (updated_by) REFERENCES users(id) ON DELETE CASCADE
 );
