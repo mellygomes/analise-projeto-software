@@ -1,5 +1,7 @@
 # Jello App
 
+### Utilize o swagger em: http://localhost:8080/swagger-ui/index.html
+
 ## [Clique aqui para acessar a documentação completa do projeto](https://drive.google.com/drive/folders/1m84KH6vI4fKN5Tof0ffgr2CzluHC9jAY?usp=drive_link)
 
 ### [Protótipo de Telas no Figma](https://www.figma.com/design/PYbaEizRwmUbTslQfBDjFh/Projeto---Analise-e-Projeto-de-Software?node-id=3-2&p=f&t=lgYB01xV2mJvXPzb-0)
