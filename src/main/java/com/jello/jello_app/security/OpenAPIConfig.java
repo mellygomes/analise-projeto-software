@@ -11,7 +11,7 @@ public class OpenAPIConfig {
     @Bean
     public OpenAPI orderServiceAPI() {
         return new OpenAPI()
-                .info(new Info().title("Jello API")
+                .info(new Info().title("Jello App API")
                         .description("Swagger for the Jello App")
                         .version("v0.0.1"))
                 .externalDocs(new ExternalDocumentation()
