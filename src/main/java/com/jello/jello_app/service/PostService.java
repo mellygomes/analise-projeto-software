@@ -1,5 +1,6 @@
 package com.jello.jello_app.service;
 
+import com.jello.jello_app.dto.AiVoteResponseDTO;
 import com.jello.jello_app.dto.CreatePostRequest;
 import com.jello.jello_app.dto.PostDTO;
 import com.jello.jello_app.model.Post;
@@ -15,4 +16,6 @@ public interface PostService {
     void deletePost(Long id);
     Post updatePost(CreatePostRequest request, Long postId);
     Page<PostDTO> getFeedPosts(int page, int size);
+    AiVoteResponseDTO incrementAiFeedback(Long id);
+    AiVoteResponseDTO decrementAiFeedback(Long id);
 }
