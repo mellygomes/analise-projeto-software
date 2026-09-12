@@ -1,8 +1,7 @@
 package com.jello.jello_app.event.listener;
 
 import com.jello.jello_app.event.UserEvent;
-import com.jello.jello_app.service.EmailService;
-import com.jello.jello_app.service.UserService;
+import com.jello.jello_app.email.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;

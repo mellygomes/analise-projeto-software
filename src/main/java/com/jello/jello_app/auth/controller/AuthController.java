@@ -1,0 +1,64 @@
+package com.jello.jello_app.auth.controller;
+
+import com.jello.jello_app.auth.dto.JwtAuthenticationResponse;
+import com.jello.jello_app.auth.dto.LoginRequest;
+import com.jello.jello_app.auth.dto.RegisterRequest;
+import com.jello.jello_app.common.dto.ApiResponse;
+import com.jello.jello_app.user.dto.UserDTO;
+import com.jello.jello_app.user.model.User;
+import com.jello.jello_app.security.jwt.JwtUtils;
+import com.jello.jello_app.security.user.AppUserDetails;
+import com.jello.jello_app.user.service.UserService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import static org.springframework.http.HttpStatus.CONFLICT;
+
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("${api.prefix}/auth")
+public class AuthController {
+    private final UserService userService;
+    private final AuthenticationManager authenticationManager;
+    private final JwtUtils jwtUtils;
+
+    @PostMapping("/login")
+    public ResponseEntity<ApiResponse> login(@RequestBody LoginRequest request) {
+        try{
+            Authentication authentication = authenticationManager
+                    .authenticate(new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            String jwt = jwtUtils.generateTokenForUser(authentication);
+            AppUserDetails userDetails = (AppUserDetails) authentication.getPrincipal();
+            JwtAuthenticationResponse jwtResponse = new JwtAuthenticationResponse(jwt);
+            userService.updateLogin(userDetails.getUsername());
+            return ResponseEntity.ok(new ApiResponse("Login Successful", jwtResponse));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ApiResponse(e.getMessage(), null));
+        }
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<ApiResponse> register(@RequestBody RegisterRequest request) {
+        try {
+            User user = userService.register(request);
+            UserDTO userDTO = userService.userDtoBuilder(user);
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(new ApiResponse("Registered!", userDTO));
+        }catch (Exception e){
+            return ResponseEntity.status(CONFLICT)
+                    .body(new ApiResponse(e.getMessage(), null));
+        }
+    }
+
+}

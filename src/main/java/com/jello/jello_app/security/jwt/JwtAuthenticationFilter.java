@@ -1,8 +1,8 @@
 package com.jello.jello_app.security.jwt;
 
 import com.jello.jello_app.domain.RequestContext;
-import com.jello.jello_app.model.User;
-import com.jello.jello_app.repository.UserRepository;
+import com.jello.jello_app.user.model.User;
+import com.jello.jello_app.user.repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

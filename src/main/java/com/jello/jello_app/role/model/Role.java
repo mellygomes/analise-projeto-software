@@ -1,0 +1,31 @@
+package com.jello.jello_app.role.model;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.jello.jello_app.user.model.User;
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.util.Collection;
+import java.util.HashSet;
+
+@Getter
+@Setter
+@Entity
+@Table(name = "roles")
+@NoArgsConstructor
+@AllArgsConstructor
+public class Role {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String name;
+
+    public Role(String name) {
+        this.name = name;
+    }
+
+    @ManyToMany(mappedBy = "roles")
+    @JsonIgnore
+    private Collection<User> users = new HashSet<>();
+}
