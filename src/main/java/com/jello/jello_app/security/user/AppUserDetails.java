@@ -1,6 +1,6 @@
 package com.jello.jello_app.security.user;
 
-import com.jello.jello_app.model.User;
+import com.jello.jello_app.user.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

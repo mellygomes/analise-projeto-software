@@ -1,7 +1,7 @@
 package com.jello.jello_app.security.user;
 
-import com.jello.jello_app.model.User;
-import com.jello.jello_app.repository.UserRepository;
+import com.jello.jello_app.user.model.User;
+import com.jello.jello_app.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
