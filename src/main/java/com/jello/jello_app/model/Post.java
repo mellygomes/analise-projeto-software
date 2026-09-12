@@ -2,19 +2,19 @@ package com.jello.jello_app.model;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
+import lombok.Setter;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
-@Data
 @Entity
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "posts")
-public class Post extends Auditable{
+public class Post extends Auditable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -28,4 +28,16 @@ public class Post extends Auditable{
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments;
+
+    private int aiCount = 0;
+
+    public void incrementAiCount() {
+        this.aiCount++;
+    }
+
+    public void decrementAiCount() {
+        if (this.aiCount > 0) {
+            this.aiCount--;
+        }
+    }
 }

@@ -1,5 +1,6 @@
 package com.jello.jello_app.controller;
 
+import com.jello.jello_app.dto.AiVoteResponseDTO;
 import com.jello.jello_app.dto.ApiResponse;
 import com.jello.jello_app.dto.CreatePostRequest;
 import com.jello.jello_app.dto.PostDTO;
@@ -80,4 +81,17 @@ public class PostController {
         }
     }
 
+    @PostMapping("/{postId}/ai")
+    @PreAuthorize("@securityUtils.canModifyPost(#postId, authentication)")
+    public ResponseEntity<ApiResponse> incrementAiFeedback(@PathVariable Long postId) {
+        AiVoteResponseDTO responseDTO = postService.incrementAiFeedback(postId);
+        return ResponseEntity.ok(new ApiResponse("Tudo ok", responseDTO));
+    }
+
+    @DeleteMapping("/{postId}/ai")
+    @PreAuthorize("@securityUtils.canModifyPost(#postId, authentication)")
+    public ResponseEntity<ApiResponse> decrementAiFeedback(@PathVariable Long postId) {
+        AiVoteResponseDTO responseDTO = postService.decrementAiFeedback(postId);
+        return ResponseEntity.ok(new ApiResponse("Tudo ok", responseDTO));
+    }
 }

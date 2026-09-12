@@ -1,10 +1,13 @@
 package com.jello.jello_app.service.impl;
 
+import com.jello.jello_app.dto.AiVoteResponseDTO;
 import com.jello.jello_app.dto.CreatePostRequest;
 import com.jello.jello_app.dto.PostDTO;
 import com.jello.jello_app.model.Post;
+import com.jello.jello_app.model.PostAiVote;
 import com.jello.jello_app.model.User;
 import com.jello.jello_app.repository.FollowRepository;
+import com.jello.jello_app.repository.PostAiVoteRepository;
 import com.jello.jello_app.repository.PostRepository;
 import com.jello.jello_app.service.ImageService;
 import com.jello.jello_app.service.PostService;
@@ -28,6 +31,7 @@ public class PostServiceImpl implements PostService {
     private final UserService userService;
     private final PostRepository postRepository;
     private final FollowRepository followRepository;
+    private final PostAiVoteRepository postAiVoteRepository;
 
     @Override
     @Transactional
@@ -113,5 +117,46 @@ public class PostServiceImpl implements PostService {
         }
 
         return posts.map(this::postDTOBuilder);
+    }
+
+    @Override
+    @Transactional
+    public AiVoteResponseDTO incrementAiFeedback(Long postId) {
+
+        User user = userService.getAuthenticatedUser();
+        Post post = postRepository.findById(postId).orElseThrow(RuntimeException::new);
+
+        post.incrementAiCount();
+
+        PostAiVote postAiVote = new PostAiVote();
+        postAiVote.setUser(user);
+        postAiVote.setPost(post);
+
+        postAiVoteRepository.save(postAiVote);
+
+        return new AiVoteResponseDTO(
+                post.getAiCount(),
+                true
+        );
+    }
+
+    @Override
+    @Transactional
+    public AiVoteResponseDTO decrementAiFeedback(Long postId) {
+
+        User user = userService.getAuthenticatedUser();
+
+        int deletedRows = postAiVoteRepository.deleteByUserIdAndPostId(user.getId(), postId);
+        if (deletedRows == 0) {
+            throw new IllegalStateException("Usuário nao possui voto cadastrado nesse post.");
+        }
+
+        Post post = postRepository.findById(postId).orElseThrow(RuntimeException::new);
+        post.decrementAiCount();
+
+        return new AiVoteResponseDTO(
+                post.getAiCount(),
+                false
+        );
     }
 }
