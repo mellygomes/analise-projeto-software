@@ -1,28 +1,25 @@
 package com.jello.jello_app.auth.controller;
 
-import com.jello.jello_app.auth.dto.JwtAuthenticationResponse;
 import com.jello.jello_app.auth.dto.LoginRequest;
 import com.jello.jello_app.auth.dto.RegisterRequest;
 import com.jello.jello_app.auth.service.AuthService;
 import com.jello.jello_app.common.dto.ApiResponse;
+import com.jello.jello_app.security.jwt.JwtUtils;
 import com.jello.jello_app.user.dto.UserDTO;
 import com.jello.jello_app.user.model.User;
-import com.jello.jello_app.security.jwt.JwtUtils;
-import com.jello.jello_app.security.user.AppUserDetails;
 import com.jello.jello_app.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.time.Duration;
 
 import static org.springframework.http.HttpStatus.CONFLICT;
 
@@ -41,7 +38,7 @@ public class AuthController {
             Authentication authentication = authService.login(request);
 
             String jwt = jwtUtils.generateTokenForUser(authentication);
-            ResponseCookie cookie = buildResponseCookie(jwt);
+            ResponseCookie cookie = buildResponseCookie(jwt, Duration.ofHours(1));
 
             return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).build();
         } catch (Exception e) {
@@ -63,13 +60,23 @@ public class AuthController {
         }
     }
 
-    private ResponseCookie buildResponseCookie(String jwt) {
+    @PostMapping("/logout")
+    public ResponseEntity<ApiResponse> logout() {
+        ResponseCookie cleanCookie = buildResponseCookie("", Duration.ZERO);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.SET_COOKIE, cleanCookie.toString())
+                .body(new ApiResponse("Logout realizado com sucesso mesmo meu dog!", null));
+    }
+
+    private ResponseCookie buildResponseCookie(String jwt, Duration maxAge) {
         return ResponseCookie
                 .from("access_token", jwt)
                 .httpOnly(true)
                 // secure setado como false para desenvolvimento
                 .secure(false)
                 .path("/")
+                .maxAge(maxAge)
                 .sameSite("Lax")
                 .build();
     }
