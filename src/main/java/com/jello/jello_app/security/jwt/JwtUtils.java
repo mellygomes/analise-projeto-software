@@ -4,6 +4,7 @@ import com.jello.jello_app.security.user.AppUserDetails;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
@@ -39,11 +40,19 @@ public class JwtUtils {
                 .compact();
     }
 
-    public String getJwtFromHeader(HttpServletRequest request) {
-        String token = request.getHeader("Authorization");
-        if (token != null && token.startsWith("Bearer ")) {
-            return token.substring(7);
+    public String getJwtFromCookie(HttpServletRequest request) {
+
+        if (request.getCookies() == null) {
+            return null;
         }
+
+        for (Cookie cookie : request.getCookies()) {
+            String TOKEN = "access_token";
+            if (TOKEN.equals(cookie.getName())) {
+                return cookie.getValue();
+            }
+        }
+
         return null;
     }
 
@@ -72,7 +81,7 @@ public class JwtUtils {
                 .getSubject();
     }
 
-    private Key key(){
+    private Key key() {
         return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
     }
 }
