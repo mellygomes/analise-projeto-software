@@ -63,12 +63,8 @@ public class JwtUtils {
                     .build()
                     .parseSignedClaims(token);
             return true;
-        } catch (ExpiredJwtException
-                 | UnsupportedJwtException
-                 | MalformedJwtException
-                 | io.jsonwebtoken.security.SecurityException
-                 | IllegalArgumentException e) {
-            throw new RuntimeException(e);
+        } catch (JwtException | IllegalArgumentException e) {
+            return false;
         }
     }
 
