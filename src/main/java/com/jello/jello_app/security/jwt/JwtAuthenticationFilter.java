@@ -38,12 +38,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(auth);
 
                 User userContext = userRepository.findByUsername(username);
-                RequestContext.setUserId(userContext.getId());
+                if (userContext != null) {
+                    RequestContext.setUserId(userContext.getId());
+                }
             }
-
-            filterChain.doFilter(request, response);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            logger.error("Não foi possível definir a autenticação do usuário: {}", e);
+        }
+
+        try {
+          filterChain.doFilter(request, response);
         } finally {
             RequestContext.clear();
         }
