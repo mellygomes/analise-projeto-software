@@ -1,8 +1,9 @@
 package com.jello.jello_app.follow.service;
 
+import com.jello.jello_app.auth.service.AuthService;
 import com.jello.jello_app.follow.model.Follow;
-import com.jello.jello_app.user.model.User;
 import com.jello.jello_app.follow.repository.FollowRepository;
+import com.jello.jello_app.user.model.User;
 import com.jello.jello_app.user.service.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -16,11 +17,12 @@ public class FollowServiceImpl implements FollowService {
 
     private final UserService userService;
     private final FollowRepository followRepository;
+    private final AuthService authService;
 
     @Override
     @Transactional
     public void followUser(Long userId) {
-        User follower = userService.getAuthenticatedUser();
+        User follower = authService.getAuthenticatedUser();
         User following = userService.getUserById(userId);
 
         if (follower.getId().equals(userId)) {
@@ -42,7 +44,7 @@ public class FollowServiceImpl implements FollowService {
     @Override
     @Transactional
     public void unfollowUser(Long userId) {
-        User follower = userService.getAuthenticatedUser();
+        User follower = authService.getAuthenticatedUser();
         User following = userService.getUserById(userId);
 
         if (follower.getId().equals(userId)) {

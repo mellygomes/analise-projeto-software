@@ -3,6 +3,7 @@ package com.jello.jello_app.user.controller;
 import com.jello.jello_app.common.dto.ApiResponse;
 import com.jello.jello_app.user.dto.UpdateUserRequest;
 import com.jello.jello_app.user.dto.UserDTO;
+import com.jello.jello_app.user.mapper.UserMapper;
 import com.jello.jello_app.user.model.User;
 import com.jello.jello_app.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +27,7 @@ public class UserController {
         try {
             User user = userService.getUserById(userId);
 
-            UserDTO userDto = userService.userDtoBuilder(user);
+            UserDTO userDto = UserMapper.toDto(user);
             return ResponseEntity.ok(new ApiResponse("Success!", userDto));
         } catch (Exception e) {
             return ResponseEntity.status(NOT_FOUND)
@@ -39,9 +40,9 @@ public class UserController {
     public ResponseEntity<ApiResponse> updateUser(@RequestBody UpdateUserRequest request, @PathVariable Long userId) {
         try {
             User user = userService.updateUser(request, userId);
-            UserDTO userDto = userService.userDtoBuilder(user);
+            UserDTO userDto = UserMapper.toDto(user);
             return ResponseEntity.ok(new ApiResponse("Updated!", userDto));
-        } catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse(e.getMessage(), null));
         }

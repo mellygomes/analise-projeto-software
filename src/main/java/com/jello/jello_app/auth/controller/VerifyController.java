@@ -1,7 +1,7 @@
 package com.jello.jello_app.auth.controller;
 
+import com.jello.jello_app.auth.service.AuthService;
 import com.jello.jello_app.common.dto.ApiResponse;
-import com.jello.jello_app.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,12 +15,13 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 @RequiredArgsConstructor
 @RequestMapping("/verify")
 public class VerifyController {
-    private final UserService userService;
+
+    private final AuthService authService;
 
     @GetMapping("/account")
     public ResponseEntity<ApiResponse> verifyAccount(@RequestParam String token) {
         try {
-            userService.verifyAccountKey(token);
+            authService.verifyAccountKey(token);
             return ResponseEntity.ok().body(new ApiResponse("Account verified!", null));
         } catch (Exception e) {
             return ResponseEntity.status(NOT_FOUND)
