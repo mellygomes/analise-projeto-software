@@ -21,48 +21,48 @@ public class UserRoleServiceImpl implements UserRoleService {
     @Override
     public User grantAdmin(Long userId) {
         Role adminRole = roleRepository.findByName("ROLE_ADMIN")
-                .orElseThrow(() -> new RuntimeException("ROLE_ADMIN not found!"));
+                .orElseThrow(() -> new RuntimeException("ROLE_ADMIN não encontrado!"));
         return userRepository.findById(userId)
                 .map(existingUser -> {
                     existingUser.setRoles(new HashSet<>(Set.of(adminRole)));
                     return userRepository.save(existingUser);
                 })
-                .orElseThrow(() -> new RuntimeException("User not found!"));
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado!"));
     }
 
     @Override
     public User revokeAdmin(Long userId) {
         Role userRole = roleRepository.findByName("ROLE_USER")
-                .orElseThrow(() -> new RuntimeException("ROLE_USER not found!"));
+                .orElseThrow(() -> new RuntimeException("ROLE_USER não encontrado!"));
         return userRepository.findById(userId)
                 .map(existingUser -> {
                     existingUser.setRoles(new HashSet<>(Set.of(userRole)));
                     return userRepository.save(existingUser);
                 })
-                .orElseThrow(() -> new RuntimeException("User not found!"));
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado!"));
     }
 
     @Override
     public User grantModerator(Long userId) {
         Role moderatorRole = roleRepository.findByName("ROLE_MODERATOR")
-                .orElseThrow(() -> new RuntimeException("ROLE_MODERATOR not found!"));
+                .orElseThrow(() -> new RuntimeException("ROLE_MODERATOR não encontrado!"));
         return userRepository.findById(userId)
                 .map(existingUser -> {
                     existingUser.setRoles(new HashSet<>(Set.of(moderatorRole)));
                     return userRepository.save(existingUser);
                 })
-                .orElseThrow(() -> new RuntimeException("User not found!"));
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado!"));
     }
 
     @Override
     public User revokeModerator(Long userId) {
         Role userRole = roleRepository.findByName("ROLE_USER")
-                .orElseThrow(() -> new RuntimeException("ROLE_USER not found!"));
+                .orElseThrow(() -> new RuntimeException("ROLE_USER não encontrado!"));
         return userRepository.findById(userId)
                 .map(existingUser -> {
                     existingUser.setRoles(new HashSet<>(Set.of(userRole)));
                     return userRepository.save(existingUser);
                 })
-                .orElseThrow(() -> new RuntimeException("User not found!"));
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado!"));
     }
 }

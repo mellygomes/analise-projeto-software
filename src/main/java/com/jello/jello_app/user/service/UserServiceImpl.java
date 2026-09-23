@@ -57,7 +57,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserById(Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found!"));
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado!"));
     }
 
     @Override
@@ -70,14 +70,14 @@ public class UserServiceImpl implements UserService {
                     existingUser.setPassword(passwordEncoder.encode(request.getPassword()));
                     return userRepository.save(existingUser);
                 })
-                .orElseThrow(() -> new RuntimeException("User not found!"));
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado!"));
     }
 
     @Override
     public void deleteUser(Long userId) {
         userRepository.findById(userId)
                 .ifPresentOrElse(userRepository::delete, () -> {
-                    throw new RuntimeException("User not found");
+                    throw new RuntimeException("Usuário não encontrado!");
                 });
     }
 
