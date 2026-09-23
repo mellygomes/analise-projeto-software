@@ -1,9 +1,10 @@
 package com.jello.jello_app.user.controller;
 
 import com.jello.jello_app.common.dto.ApiResponse;
+import com.jello.jello_app.role.service.UserRoleService;
 import com.jello.jello_app.user.dto.UserDTO;
+import com.jello.jello_app.user.mapper.UserMapper;
 import com.jello.jello_app.user.model.User;
-import com.jello.jello_app.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,23 +17,24 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("${api.prefix}/moderator")
 public class ModeratorController {
-    private final UserService userService;
+
+    private final UserRoleService userRoleService;
 
     @PostMapping("/{userId}/grant")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ApiResponse> grantModerator(@PathVariable Long userId){
-        User user = userService.grantModerator(userId);
+    public ResponseEntity<ApiResponse> grantModerator(@PathVariable Long userId) {
+        User user = userRoleService.grantModerator(userId);
 
-        UserDTO userDto = userService.userDtoBuilder(user);
+        UserDTO userDto = UserMapper.toDto(user);
         return ResponseEntity.ok(new ApiResponse("User updated to moderator!", userDto));
     }
 
     @PostMapping("/{userId}/revoke")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ApiResponse> revokeModerator(@PathVariable Long userId){
-        User user = userService.revokeModerator(userId);
+    public ResponseEntity<ApiResponse> revokeModerator(@PathVariable Long userId) {
+        User user = userRoleService.revokeModerator(userId);
 
-        UserDTO userDto = userService.userDtoBuilder(user);
+        UserDTO userDto = UserMapper.toDto(user);
         return ResponseEntity.ok(new ApiResponse("Moderator updated to default user!", userDto));
     }
 }

@@ -1,16 +1,16 @@
 package com.jello.jello_app.post.service;
 
+import com.jello.jello_app.auth.service.AuthService;
+import com.jello.jello_app.follow.repository.FollowRepository;
+import com.jello.jello_app.image.service.ImageService;
 import com.jello.jello_app.post.dto.AiVoteResponseDTO;
 import com.jello.jello_app.post.dto.CreatePostRequest;
 import com.jello.jello_app.post.dto.PostDTO;
 import com.jello.jello_app.post.model.Post;
 import com.jello.jello_app.post.model.PostAiVote;
-import com.jello.jello_app.user.model.User;
-import com.jello.jello_app.follow.repository.FollowRepository;
 import com.jello.jello_app.post.repository.PostAiVoteRepository;
 import com.jello.jello_app.post.repository.PostRepository;
-import com.jello.jello_app.image.service.ImageService;
-import com.jello.jello_app.user.service.UserService;
+import com.jello.jello_app.user.model.User;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -27,7 +27,7 @@ import java.util.List;
 public class PostServiceImpl implements PostService {
 
     private final ImageService imageService;
-    private final UserService userService;
+    private final AuthService authService;
     private final PostRepository postRepository;
     private final FollowRepository followRepository;
     private final PostAiVoteRepository postAiVoteRepository;
@@ -38,7 +38,7 @@ public class PostServiceImpl implements PostService {
 
         Post savedPost = null;
         try {
-            User user = userService.getAuthenticatedUser();
+            User user = authService.getAuthenticatedUser();
 
             Post post = new Post();
             post.setTitle(request.getTitle());
@@ -94,7 +94,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public Page<PostDTO> getFeedPosts(int page, int size) {
-        User user = userService.getAuthenticatedUser();
+        User user = authService.getAuthenticatedUser();
 
         Pageable pageable = PageRequest.of(
                 page,
@@ -122,7 +122,7 @@ public class PostServiceImpl implements PostService {
     @Transactional
     public AiVoteResponseDTO incrementAiFeedback(Long postId) {
 
-        User user = userService.getAuthenticatedUser();
+        User user = authService.getAuthenticatedUser();
         Post post = postRepository.findById(postId).orElseThrow(RuntimeException::new);
 
         post.incrementAiCount();
@@ -143,7 +143,7 @@ public class PostServiceImpl implements PostService {
     @Transactional
     public AiVoteResponseDTO decrementAiFeedback(Long postId) {
 
-        User user = userService.getAuthenticatedUser();
+        User user = authService.getAuthenticatedUser();
 
         int deletedRows = postAiVoteRepository.deleteByUserIdAndPostId(user.getId(), postId);
         if (deletedRows == 0) {

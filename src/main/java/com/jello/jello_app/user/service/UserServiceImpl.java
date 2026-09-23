@@ -1,31 +1,29 @@
 package com.jello.jello_app.user.service;
 
 import com.jello.jello_app.auth.dto.RegisterRequest;
+import com.jello.jello_app.confirmation.model.Confirmation;
+import com.jello.jello_app.confirmation.repository.ConfirmationRepository;
 import com.jello.jello_app.domain.RequestContext;
 import com.jello.jello_app.enumeration.EventType;
 import com.jello.jello_app.event.UserEvent;
-import com.jello.jello_app.confirmation.model.Confirmation;
 import com.jello.jello_app.role.model.Role;
-import com.jello.jello_app.user.dto.UpdateUserRequest;
-import com.jello.jello_app.user.dto.UserDTO;
-import com.jello.jello_app.user.model.User;
-import com.jello.jello_app.confirmation.repository.ConfirmationRepository;
 import com.jello.jello_app.role.repository.RoleRepository;
+import com.jello.jello_app.user.dto.UpdateUserRequest;
+import com.jello.jello_app.user.model.User;
 import com.jello.jello_app.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Map;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
+
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final RoleRepository roleRepository;
@@ -35,20 +33,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public User register(RegisterRequest request) {
         Role roleUser = roleRepository.findByName("ROLE_USER")
-                .orElseThrow(() -> new RuntimeException("ROLE_USER not found!"));
-        try{
-            User user = new User();
-            user.setFirstName(request.getFirstName());
-            user.setLastName(request.getLastName());
-            user.setEmail(request.getEmail());
-            user.setUsername(request.getUsername());
-            user.setPassword(passwordEncoder.encode(request.getPassword()));
-            user.setProfilePicture(null);
-            user.setRoles(Set.of(roleUser));
-            user.setBio(null);
-            user.setEnabled(false);
+                .orElseThrow(() -> new RuntimeException("Tipo de usuario não encontrado! (ROLE_USER)"));
+        try {
+            User user = createUser(roleUser, request);
             User savedUser = userRepository.save(user);
-            if(RequestContext.getUserId() == null) {
+
+            if (RequestContext.getUserId() == null) {
                 user.setCreatedBy(savedUser.getId());
                 user.setUpdatedBy(savedUser.getId());
             }
@@ -59,24 +49,13 @@ public class UserServiceImpl implements UserService {
             publisher.publishEvent(new UserEvent(savedUser, EventType.REGISTRATION, Map.of("key", confirmation.getConfirmationKey())));
 
             return savedUser;
-        } catch (DataIntegrityViolationException e){
+        } catch (DataIntegrityViolationException e) {
             throw new RuntimeException(e.getMessage());
         }
     }
 
     @Override
-    public UserDTO userDtoBuilder(User user){
-        return UserDTO.builder()
-                .email(user.getEmail())
-                .username(user.getUsername())
-                .firstName(user.getFirstName())
-                .lastName(user.getLastName())
-                .bio(user.getBio())
-                .build();
-    }
-
-    @Override
-    public User getUserById(Long userId){
+    public User getUserById(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found!"));
     }
@@ -97,80 +76,23 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(Long userId) {
         userRepository.findById(userId)
-                .ifPresentOrElse(userRepository :: delete, () -> {
+                .ifPresentOrElse(userRepository::delete, () -> {
                     throw new RuntimeException("User not found");
                 });
     }
 
-    @Override
-    public User getAuthenticatedUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-        return userRepository.findByUsername(username);
-    }
+    private User createUser(Role roleUser, RegisterRequest request) {
+        User user = new User();
+        user.setFirstName(request.getFirstName());
+        user.setLastName(request.getLastName());
+        user.setEmail(request.getEmail());
+        user.setUsername(request.getUsername());
+        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setProfilePicture(null);
+        user.setRoles(Set.of(roleUser));
+        user.setBio(null);
+        user.setEnabled(false);
 
-    @Override
-    public User grantAdmin(Long userId) {
-        Role adminRole = roleRepository.findByName("ROLE_ADMIN")
-                .orElseThrow(() -> new RuntimeException("ROLE_ADMIN not found!"));
-        return userRepository.findById(userId)
-                .map(existingUser -> {
-                    existingUser.setRoles(new HashSet<>(Set.of(adminRole)));
-                    return userRepository.save(existingUser);
-                })
-                .orElseThrow(() -> new RuntimeException("User not found!"));
-    }
-
-    @Override
-    public User revokeAdmin(Long userId) {
-        Role userRole = roleRepository.findByName("ROLE_USER")
-                .orElseThrow(() -> new RuntimeException("ROLE_USER not found!"));
-        return userRepository.findById(userId)
-                .map(existingUser -> {
-                    existingUser.setRoles(new HashSet<>(Set.of(userRole)));
-                    return userRepository.save(existingUser);
-                })
-                .orElseThrow(() -> new RuntimeException("User not found!"));
-    }
-
-    @Override
-    public User grantModerator(Long userId) {
-        Role moderatorRole = roleRepository.findByName("ROLE_MODERATOR")
-                .orElseThrow(() -> new RuntimeException("ROLE_MODERATOR not found!"));
-        return userRepository.findById(userId)
-                .map(existingUser -> {
-                    existingUser.setRoles(new HashSet<>(Set.of(moderatorRole)));
-                    return userRepository.save(existingUser);
-                })
-                .orElseThrow(() -> new RuntimeException("User not found!"));
-    }
-
-    @Override
-    public User revokeModerator(Long userId) {
-        Role userRole = roleRepository.findByName("ROLE_USER")
-                .orElseThrow(() -> new RuntimeException("ROLE_USER not found!"));
-        return userRepository.findById(userId)
-                .map(existingUser -> {
-                    existingUser.setRoles(new HashSet<>(Set.of(userRole)));
-                    return userRepository.save(existingUser);
-                })
-                .orElseThrow(() -> new RuntimeException("User not found!"));
-    }
-
-    @Override
-    public void verifyAccountKey(String token) {
-        Confirmation confirmation = confirmationRepository.findByConfirmationKey(token)
-                .orElseThrow(() -> new RuntimeException("Confirmation not found!"));
-        User user = userRepository.findByEmail(confirmation.getUser().getEmail());
-        user.setEnabled(true);
-        userRepository.save(user);
-        confirmationRepository.delete(confirmation);
-    }
-
-    @Override
-    public void updateLogin(String username) {
-        User user = userRepository.findByUsername(username);
-        user.setLastLogin(LocalDateTime.now());
-        userRepository.save(user);
+        return user;
     }
 }

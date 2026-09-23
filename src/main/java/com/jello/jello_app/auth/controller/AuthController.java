@@ -8,6 +8,7 @@ import com.jello.jello_app.security.jwt.JwtUtils;
 import com.jello.jello_app.security.user.AppUserDetails;
 import com.jello.jello_app.user.dto.UserDTO;
 import com.jello.jello_app.user.dto.UserResponseDTO;
+import com.jello.jello_app.user.mapper.UserMapper;
 import com.jello.jello_app.user.model.User;
 import com.jello.jello_app.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -51,7 +52,7 @@ public class AuthController {
     public ResponseEntity<ApiResponse> register(@RequestBody RegisterRequest request) {
         try {
             User user = userService.register(request);
-            UserDTO userDTO = userService.userDtoBuilder(user);
+            UserDTO userDTO = UserMapper.toDto(user);
             return ResponseEntity.status(HttpStatus.CREATED)
                     .body(new ApiResponse("Registered!", userDTO));
         } catch (Exception e) {

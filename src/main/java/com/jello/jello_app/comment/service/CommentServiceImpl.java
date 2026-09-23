@@ -1,13 +1,12 @@
 package com.jello.jello_app.comment.service;
 
+import com.jello.jello_app.auth.service.AuthService;
 import com.jello.jello_app.comment.dto.CommentDTO;
 import com.jello.jello_app.comment.model.Comment;
-import com.jello.jello_app.post.model.Post;
-import com.jello.jello_app.user.model.User;
 import com.jello.jello_app.comment.repository.CommentRepository;
-import com.jello.jello_app.user.repository.UserRepository;
+import com.jello.jello_app.post.model.Post;
 import com.jello.jello_app.post.service.PostService;
-import com.jello.jello_app.user.service.UserService;
+import com.jello.jello_app.user.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,23 +16,22 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
-    private final UserService userService;
     private final PostService postService;
-    private final UserRepository userRepository;
+    private final AuthService authService;
 
     @Override
     public Comment addComment(String content, Long postId) {
-        User user = userService.getAuthenticatedUser();
+        User user = authService.getAuthenticatedUser();
         Post post = postService.getPostById(postId);
 
         Comment comment = new Comment();
-        try{
+        try {
             comment.setContent(content);
             comment.setPost(post);
             comment.setUser(user);
 
             commentRepository.save(comment);
-        } catch (Exception e){
+        } catch (Exception e) {
             throw new RuntimeException(e.getMessage());
         }
 
