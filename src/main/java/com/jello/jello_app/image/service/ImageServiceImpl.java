@@ -1,6 +1,7 @@
 package com.jello.jello_app.image.service;
 
 import com.jello.jello_app.image.dto.ImageDTO;
+import com.jello.jello_app.image.mapper.ImageMapper;
 import com.jello.jello_app.image.model.Image;
 import com.jello.jello_app.post.model.Post;
 import com.jello.jello_app.image.repository.ImageRepository;
@@ -16,35 +17,28 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ImageServiceImpl implements ImageService {
+
     private final ImageRepository imageRepository;
 
     @Override
     @Transactional
     public List<ImageDTO> saveImageForPost(List<MultipartFile> files, Post post) {
         List<ImageDTO> savedImagesDTO = new ArrayList<>();
-        String buildDownloadUrl = "/api/v1/image/download/";
+//        String buildDownloadUrl = "/api/v1/image/download/";
 
         for (MultipartFile file : files) {
-            try{
-                Image image = new Image();
-                image.setFileName(file.getOriginalFilename());
-                image.setFileType(file.getContentType());
-                image.setImage(file.getBytes());
-
-                image.setPost(post);
-
+            try {
+                Image image = ImageMapper.toEntity(file, post);
                 Image savedImage = imageRepository.save(image);
-                savedImage.setDownloadUrl(buildDownloadUrl +  savedImage.getId());
-                imageRepository.save(savedImage);
+                // Removida a coluna de download URL da entidade e passada a logica para o DTO para não fazer 1 consulta de save a mais por cada imagem
+//                savedImage.setDownloadUrl(buildDownloadUrl + savedImage.getId());
+//                imageRepository.save(savedImage);
 
-                ImageDTO imageDTO = new ImageDTO();
-                imageDTO.setId(savedImage.getId());
-                imageDTO.setFileName(savedImage.getFileName());
-                imageDTO.setDownloadUrl(savedImage.getDownloadUrl());
+                ImageDTO imageDTO = ImageMapper.toDto(savedImage);
 
                 savedImagesDTO.add(imageDTO);
             } catch (IOException e) {
-                throw new RuntimeException("Error processing image: " + file.getOriginalFilename(), e);
+                throw new RuntimeException("Erro ao processar a imagem: " + file.getOriginalFilename(), e);
             }
         }
 
@@ -52,8 +46,8 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
-    public Image getImageById(Long imageId){
+    public Image getImageById(Long imageId) {
         return imageRepository.findById(imageId)
-                .orElseThrow(() -> new RuntimeException("Image not found!"));
+                .orElseThrow(() -> new RuntimeException("Imagem não encontrada!"));
     }
 }
