@@ -36,6 +36,13 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    public void updateLogin(String username) {
+        User user = userRepository.findByUsername(username);
+        user.setLastLogin(LocalDateTime.now());
+        userRepository.save(user);
+    }
+
+    @Override
     public User getAuthenticatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
@@ -45,18 +52,11 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public void verifyAccountKey(String token) {
         Confirmation confirmation = confirmationRepository.findByConfirmationKey(token)
-                .orElseThrow(() -> new RuntimeException("Confirmation not found!"));
+                .orElseThrow(() -> new RuntimeException("Chave de confirmação não encontrada!"));
         User user = userRepository.findByEmail(confirmation.getUser().getEmail());
         user.setEnabled(true);
         userRepository.save(user);
         confirmationRepository.delete(confirmation);
-    }
-
-    @Override
-    public void updateLogin(String username) {
-        User user = userRepository.findByUsername(username);
-        user.setLastLogin(LocalDateTime.now());
-        userRepository.save(user);
     }
 
 }
