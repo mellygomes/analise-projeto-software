@@ -4,11 +4,13 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.jello.jello_app.post.model.Post;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @Entity
+@Builder
 @Table(name = "images")
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,7 +21,7 @@ public class Image {
 
     private String fileName;
     private String fileType;
-    private String downloadUrl;
+//    private String downloadUrl;
 
     @Column(columnDefinition = "BYTEA")
     private byte[] image;
