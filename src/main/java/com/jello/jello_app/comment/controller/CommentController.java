@@ -1,5 +1,6 @@
 package com.jello.jello_app.comment.controller;
 
+import com.jello.jello_app.comment.mapper.CommentMapper;
 import com.jello.jello_app.common.dto.ApiResponse;
 import com.jello.jello_app.comment.dto.CommentDTO;
 import com.jello.jello_app.comment.dto.AddCommentRequest;
@@ -24,26 +25,26 @@ public class CommentController {
 
     @PostMapping("/{postId}/add")
     public ResponseEntity<ApiResponse> addComment(@PathVariable Long postId, @RequestBody AddCommentRequest request) {
-        try{
+        try {
             Comment newComment = commentService.addComment(request.getComment(), postId);
-            CommentDTO commentResponse = commentService.commentDTOBuilder(newComment);
-            return  ResponseEntity.ok(new ApiResponse("Comment added!", commentResponse));
-        } catch (Exception e){
+            CommentDTO commentResponse = CommentMapper.toDto(newComment);
+            return ResponseEntity.ok(new ApiResponse("Comment added!", commentResponse));
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse(e.getMessage(), null));
         }
     }
 
     @GetMapping("/{postId}/all")
-    public ResponseEntity<ApiResponse> getAllCommentsFromPost(@PathVariable Post postId) {
-        List<CommentDTO> comments = commentService.getAllCommentsFromPost(postId);
+    public ResponseEntity<ApiResponse> getAllCommentsFromPost(@PathVariable Post post) {
+        List<CommentDTO> comments = commentService.getAllCommentsFromPost(post);
         return ResponseEntity.ok(new ApiResponse("Comments listed!", comments));
     }
 
     @DeleteMapping("/{commentId}")
     @PreAuthorize("@securityUtils.canDeleteComment(#commentId, authentication)")
     public ResponseEntity<ApiResponse> deleteComment(@PathVariable Long commentId) {
-        try{
+        try {
             commentService.deleteComment(commentId);
             return ResponseEntity.ok(new ApiResponse("Comment deleted!", commentId));
         } catch (Exception e) {
