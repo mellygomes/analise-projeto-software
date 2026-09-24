@@ -3,6 +3,7 @@ package com.jello.jello_app.user.service;
 import com.jello.jello_app.auth.dto.RegisterRequest;
 import com.jello.jello_app.confirmation.model.Confirmation;
 import com.jello.jello_app.confirmation.repository.ConfirmationRepository;
+import com.jello.jello_app.enumeration.RoleType;
 import com.jello.jello_app.event.UserEvent;
 import com.jello.jello_app.role.model.Role;
 import com.jello.jello_app.role.repository.RoleRepository;
@@ -52,7 +53,7 @@ class UserServiceImplTest {
         Role role = createRole();
         RegisterRequest registerRequest = createRegisterRequest();
 
-        when(roleRepository.findByName("ROLE_USER")).thenReturn(Optional.of(role));
+        when(roleRepository.findByName(RoleType.ROLE_USER.getName())).thenReturn(Optional.of(role));
         when(passwordEncoder.encode(registerRequest.getPassword())).thenReturn("criptografada");
 
         when(userRepository.save(any(User.class))).thenAnswer(invocation -> {
@@ -96,7 +97,7 @@ class UserServiceImplTest {
         Role role = createRole();
         RegisterRequest registerRequest = createRegisterRequest();
 
-        when(roleRepository.findByName("ROLE_USER")).thenReturn(Optional.of(role));
+        when(roleRepository.findByName(RoleType.ROLE_USER.getName())).thenReturn(Optional.of(role));
         when(passwordEncoder.encode(registerRequest.getPassword())).thenReturn("Cripto");
         when(userRepository.save(any(User.class))).thenThrow(new DataIntegrityViolationException("Email já cadastrado"));
 
@@ -197,7 +198,7 @@ class UserServiceImplTest {
     private Role createRole() {
         Role role = new Role();
         role.setId(1L);
-        role.setName("ROLE_USER");
+        role.setName(RoleType.ROLE_USER.getName());
         role.setUsers(List.of());
 
         return role;

@@ -5,6 +5,7 @@ import com.jello.jello_app.confirmation.model.Confirmation;
 import com.jello.jello_app.confirmation.repository.ConfirmationRepository;
 import com.jello.jello_app.domain.RequestContext;
 import com.jello.jello_app.enumeration.EventType;
+import com.jello.jello_app.enumeration.RoleType;
 import com.jello.jello_app.event.UserEvent;
 import com.jello.jello_app.role.model.Role;
 import com.jello.jello_app.role.repository.RoleRepository;
@@ -17,6 +18,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -32,7 +34,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User register(RegisterRequest request) {
-        Role roleUser = roleRepository.findByName("ROLE_USER")
+        Role roleUser = roleRepository.findByName(RoleType.ROLE_USER.getName())
                 .orElseThrow(() -> new RuntimeException("Tipo de usuario não encontrado! (ROLE_USER)"));
         try {
             User user = createUser(roleUser, request);
@@ -57,7 +59,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUserById(Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found!"));
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado!"));
     }
 
     @Override
@@ -70,14 +72,14 @@ public class UserServiceImpl implements UserService {
                     existingUser.setPassword(passwordEncoder.encode(request.getPassword()));
                     return userRepository.save(existingUser);
                 })
-                .orElseThrow(() -> new RuntimeException("User not found!"));
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado!"));
     }
 
     @Override
     public void deleteUser(Long userId) {
         userRepository.findById(userId)
                 .ifPresentOrElse(userRepository::delete, () -> {
-                    throw new RuntimeException("User not found");
+                    throw new RuntimeException("Usuário não encontrado!");
                 });
     }
 
@@ -89,7 +91,7 @@ public class UserServiceImpl implements UserService {
         user.setUsername(request.getUsername());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setProfilePicture(null);
-        user.setRoles(Set.of(roleUser));
+        user.setRoles(new HashSet<>(Set.of(roleUser)));
         user.setBio(null);
         user.setEnabled(false);
 

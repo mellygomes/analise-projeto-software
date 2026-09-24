@@ -1,6 +1,7 @@
 package com.jello.jello_app.utils;
 
 import com.jello.jello_app.comment.model.Comment;
+import com.jello.jello_app.enumeration.RoleType;
 import com.jello.jello_app.post.model.Post;
 import com.jello.jello_app.comment.repository.CommentRepository;
 import com.jello.jello_app.post.repository.PostRepository;
@@ -23,7 +24,7 @@ public class SecurityUtils {
                 .orElseThrow(() -> new RuntimeException("Comment not found!"));
 
         Boolean isAdmin = authentication.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+                .anyMatch(a -> a.getAuthority().equals(RoleType.ROLE_ADMIN.getName()));
 
         Boolean isCommentOwner = comment.getUser().getUsername().equals(username);
 
@@ -39,7 +40,7 @@ public class SecurityUtils {
                 .orElseThrow(() -> new RuntimeException("Post not found!"));
 
         Boolean isAdmin = authentication.getAuthorities().stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+                .anyMatch(a -> a.getAuthority().equals(RoleType.ROLE_ADMIN.getName()));
 
         Boolean isPostOwner = post.getUser().getUsername().equals(username);
 

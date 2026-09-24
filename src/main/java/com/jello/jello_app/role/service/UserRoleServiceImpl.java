@@ -1,14 +1,12 @@
 package com.jello.jello_app.role.service;
 
+import com.jello.jello_app.enumeration.RoleType;
 import com.jello.jello_app.role.model.Role;
 import com.jello.jello_app.role.repository.RoleRepository;
 import com.jello.jello_app.user.model.User;
 import com.jello.jello_app.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.HashSet;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -17,52 +15,61 @@ public class UserRoleServiceImpl implements UserRoleService {
     private final RoleRepository roleRepository;
     private final UserRepository userRepository;
 
-
     @Override
     public User grantAdmin(Long userId) {
-        Role adminRole = roleRepository.findByName("ROLE_ADMIN")
-                .orElseThrow(() -> new RuntimeException("ROLE_ADMIN not found!"));
+        Role adminRole = roleRepository.findByName(RoleType.ROLE_ADMIN.getName())
+                .orElseThrow(() -> new RuntimeException("ROLE_ADMIN não encontrado!"));
         return userRepository.findById(userId)
                 .map(existingUser -> {
-                    existingUser.setRoles(new HashSet<>(Set.of(adminRole)));
+                    existingUser.getRoles().add(adminRole);
                     return userRepository.save(existingUser);
                 })
-                .orElseThrow(() -> new RuntimeException("User not found!"));
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado!"));
     }
 
     @Override
     public User revokeAdmin(Long userId) {
-        Role userRole = roleRepository.findByName("ROLE_USER")
-                .orElseThrow(() -> new RuntimeException("ROLE_USER not found!"));
-        return userRepository.findById(userId)
-                .map(existingUser -> {
-                    existingUser.setRoles(new HashSet<>(Set.of(userRole)));
-                    return userRepository.save(existingUser);
-                })
-                .orElseThrow(() -> new RuntimeException("User not found!"));
+        Role adminRole = roleRepository.findByName(RoleType.ROLE_ADMIN.getName())
+                .orElseThrow(() -> new RuntimeException("ROLE_ADMIN não encontrado!"));
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Usuário nao encontrado"));
+
+        boolean removedAdmin = user.getRoles().removeIf(role -> role.getName().equals(adminRole.getName()));
+
+        if (!removedAdmin) {
+            throw new RuntimeException("Usuário não possui o cargo de ADMIN!");
+        }
+
+        return userRepository.save(user);
     }
 
     @Override
     public User grantModerator(Long userId) {
-        Role moderatorRole = roleRepository.findByName("ROLE_MODERATOR")
-                .orElseThrow(() -> new RuntimeException("ROLE_MODERATOR not found!"));
+        Role moderatorRole = roleRepository.findByName(RoleType.ROLE_MODERATOR.getName())
+                .orElseThrow(() -> new RuntimeException("ROLE_MODERATOR não encontrado!"));
         return userRepository.findById(userId)
                 .map(existingUser -> {
-                    existingUser.setRoles(new HashSet<>(Set.of(moderatorRole)));
+                    existingUser.getRoles().add(moderatorRole);
                     return userRepository.save(existingUser);
                 })
-                .orElseThrow(() -> new RuntimeException("User not found!"));
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado!"));
     }
 
     @Override
     public User revokeModerator(Long userId) {
-        Role userRole = roleRepository.findByName("ROLE_USER")
-                .orElseThrow(() -> new RuntimeException("ROLE_USER not found!"));
-        return userRepository.findById(userId)
-                .map(existingUser -> {
-                    existingUser.setRoles(new HashSet<>(Set.of(userRole)));
-                    return userRepository.save(existingUser);
-                })
-                .orElseThrow(() -> new RuntimeException("User not found!"));
+        Role moderatorRole = roleRepository.findByName(RoleType.ROLE_MODERATOR.getName())
+                .orElseThrow(() -> new RuntimeException("ROLE_MODERATOR não encontrado!"));
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+
+        boolean removedModerator = user.getRoles().removeIf(role -> role.getName().equals(moderatorRole.getName()));
+
+        if (!removedModerator) {
+            throw new RuntimeException("Usuário nao possui o cargo de MODERADOR!");
+        }
+
+        return userRepository.save(user);
     }
 }
