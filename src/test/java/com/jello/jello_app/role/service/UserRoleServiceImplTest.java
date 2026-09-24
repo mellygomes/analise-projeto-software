@@ -1,5 +1,6 @@
 package com.jello.jello_app.role.service;
 
+import com.jello.jello_app.enumeration.RoleType;
 import com.jello.jello_app.role.model.Role;
 import com.jello.jello_app.role.repository.RoleRepository;
 import com.jello.jello_app.user.model.User;
@@ -31,13 +32,13 @@ class UserRoleServiceImplTest {
     // Testa a permissão de admin dada ao usuario
     @Test
     void shouldGrantAdminRole() {
-        Role role = createRole("ROLE_ADMIN");
+        Role role = createRole(RoleType.ROLE_ADMIN.getName());
 
         User user = new User();
         user.setId(1L);
-        user.setRoles(new HashSet<>(Set.of(createRole("ROLE_USER"))));
+        user.setRoles(new HashSet<>(Set.of(createRole(RoleType.ROLE_USER.getName()))));
 
-        when(roleRepository.findByName("ROLE_ADMIN")).thenReturn(Optional.of(role));
+        when(roleRepository.findByName(RoleType.ROLE_ADMIN.getName())).thenReturn(Optional.of(role));
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(userRepository.save(any(User.class))).thenAnswer(invocation -> {
             User savedUser = invocation.getArgument(0);
@@ -48,7 +49,7 @@ class UserRoleServiceImplTest {
         User savedUser = userRoleService.grantAdmin(1L);
         boolean hasAdminRole = savedUser.getRoles()
                 .stream()
-                .anyMatch(roleUser -> roleUser.getName().equals("ROLE_ADMIN"));
+                .anyMatch(roleUser -> roleUser.getName().equals(RoleType.ROLE_ADMIN.getName()));
 
         assertTrue(hasAdminRole, "O usuario deveria possuir a ROLE_ADMIN");
         assertEquals(2, savedUser.getRoles().size());
@@ -61,9 +62,9 @@ class UserRoleServiceImplTest {
     // Testa o caminho onde tenta dar a permissao quando o usuario nao existe
     @Test
     void shouldNotGrantAdminWhenUserNotFound() {
-        Role adminRole = createRole("ROLE_ADMIN");
+        Role adminRole = createRole(RoleType.ROLE_ADMIN.getName());
 
-        when(roleRepository.findByName("ROLE_ADMIN")).thenReturn(Optional.of(adminRole));
+        when(roleRepository.findByName(RoleType.ROLE_ADMIN.getName())).thenReturn(Optional.of(adminRole));
         when(userRepository.findById(1L)).thenReturn(Optional.empty());
 
         RuntimeException exception = assertThrows(RuntimeException.class, () -> userRoleService.grantAdmin(1L));
@@ -78,14 +79,14 @@ class UserRoleServiceImplTest {
     // Testa a remoção de permissao de admin
     @Test
     void shouldRevokeAdminRole() {
-        Role adminRole = createRole("ROLE_ADMIN");
-        Role userRole = createRole("ROLE_USER");
+        Role adminRole = createRole(RoleType.ROLE_ADMIN.getName());
+        Role userRole = createRole(RoleType.ROLE_USER.getName());
 
         User user = new User();
         user.setId(1L);
         user.setRoles(new HashSet<>(Set.of(adminRole, userRole)));
 
-        when(roleRepository.findByName("ROLE_ADMIN")).thenReturn(Optional.of(adminRole));
+        when(roleRepository.findByName(RoleType.ROLE_ADMIN.getName())).thenReturn(Optional.of(adminRole));
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
         when(userRepository.save(any(User.class))).thenAnswer(invocation -> {
@@ -108,9 +109,9 @@ class UserRoleServiceImplTest {
     // Testa a remocao de admin quando usuario nao existe
     @Test
     void shouldNotRevokeAdminWhenUserNotFound() {
-        Role adminRole = createRole("ROLE_ADMIN");
+        Role adminRole = createRole(RoleType.ROLE_ADMIN.getName());
 
-        when(roleRepository.findByName("ROLE_ADMIN")).thenReturn(Optional.of(adminRole));
+        when(roleRepository.findByName(RoleType.ROLE_ADMIN.getName())).thenReturn(Optional.of(adminRole));
         when(userRepository.findById(1L)).thenReturn(Optional.empty());
 
         RuntimeException exception = assertThrows(RuntimeException.class, () -> userRoleService.revokeAdmin(1L));
@@ -125,14 +126,14 @@ class UserRoleServiceImplTest {
     // Testa a remocao de admin quando o usario já nao tem o cargo de admin
     @Test
     void shouldNotRevokeAdminWhenUserDoesNotHaveAdminRole() {
-        Role adminRole = createRole("ROLE_ADMIN");
-        Role userRole = createRole("ROLE_USER");
+        Role adminRole = createRole(RoleType.ROLE_ADMIN.getName());
+        Role userRole = createRole(RoleType.ROLE_USER.getName());
 
         User user = new User();
         user.setId(1L);
         user.setRoles(new HashSet<>(Set.of(userRole)));
 
-        when(roleRepository.findByName("ROLE_ADMIN")).thenReturn(Optional.of(adminRole));
+        when(roleRepository.findByName(RoleType.ROLE_ADMIN.getName())).thenReturn(Optional.of(adminRole));
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
         RuntimeException exception = assertThrows(RuntimeException.class, () -> userRoleService.revokeAdmin(1L));
@@ -147,13 +148,13 @@ class UserRoleServiceImplTest {
     // Testa a permissao de moderador dada ao usuario
     @Test
     void shouldGrantModeratorRole() {
-        Role role = createRole("ROLE_MODERATOR");
+        Role role = createRole(RoleType.ROLE_MODERATOR.getName());
 
         User user = new User();
         user.setId(1L);
-        user.setRoles(new HashSet<>(Set.of(createRole("ROLE_USER"))));
+        user.setRoles(new HashSet<>(Set.of(createRole(RoleType.ROLE_USER.getName()))));
 
-        when(roleRepository.findByName("ROLE_MODERATOR")).thenReturn(Optional.of(role));
+        when(roleRepository.findByName(RoleType.ROLE_MODERATOR.getName())).thenReturn(Optional.of(role));
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(userRepository.save(any(User.class))).thenAnswer(invocation -> {
             User savedUser = invocation.getArgument(0);
@@ -165,7 +166,7 @@ class UserRoleServiceImplTest {
         boolean hasModeratorRole = savedUser
                 .getRoles()
                 .stream()
-                .anyMatch(roleModerator -> roleModerator.getName().equals("ROLE_MODERATOR"));
+                .anyMatch(roleModerator -> roleModerator.getName().equals(RoleType.ROLE_MODERATOR.getName()));
 
         assertTrue(hasModeratorRole, "Usuario deveria ter role de ROLE_MODERATOR");
         assertEquals(2, savedUser.getRoles().size());
@@ -178,9 +179,9 @@ class UserRoleServiceImplTest {
     // Testa o caminho de permissao de moderador quando usuario nao existe
     @Test
     void shouldNotGrantModeratorWhenUserNotFound() {
-        Role moderatorRole = createRole("ROLE_MODERATOR");
+        Role moderatorRole = createRole(RoleType.ROLE_MODERATOR.getName());
 
-        when(roleRepository.findByName("ROLE_MODERATOR")).thenReturn(Optional.of(moderatorRole));
+        when(roleRepository.findByName(RoleType.ROLE_MODERATOR.getName())).thenReturn(Optional.of(moderatorRole));
         when(userRepository.findById(1L)).thenReturn(Optional.empty());
 
         RuntimeException exception = assertThrows(RuntimeException.class, () -> userRoleService.grantModerator(1L));
@@ -195,14 +196,14 @@ class UserRoleServiceImplTest {
     // Testa a remocao da permissao de moderador
     @Test
     void shouldRevokeModeratorRole() {
-        Role moderatorRole = createRole("ROLE_MODERATOR");
-        Role userRole = createRole("ROLE_USER");
+        Role moderatorRole = createRole(RoleType.ROLE_MODERATOR.getName());
+        Role userRole = createRole(RoleType.ROLE_USER.getName());
 
         User user = new User();
         user.setId(1L);
         user.setRoles(new HashSet<>(Set.of(userRole, moderatorRole)));
 
-        when(roleRepository.findByName("ROLE_MODERATOR")).thenReturn(Optional.of(moderatorRole));
+        when(roleRepository.findByName(RoleType.ROLE_MODERATOR.getName())).thenReturn(Optional.of(moderatorRole));
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(userRepository.save(any(User.class))).thenAnswer(invocation -> {
             User savedUser = invocation.getArgument(0);
@@ -224,9 +225,9 @@ class UserRoleServiceImplTest {
     // Testa a remocao da permissao de moderador quando usuario nao existe
     @Test
     void shouldNotRevokeModeratorWhenUserNotFound() {
-        Role moderatorRole = createRole("ROLE_MODERATOR");
+        Role moderatorRole = createRole(RoleType.ROLE_MODERATOR.getName());
 
-        when(roleRepository.findByName("ROLE_MODERATOR")).thenReturn(Optional.of(moderatorRole));
+        when(roleRepository.findByName(RoleType.ROLE_MODERATOR.getName())).thenReturn(Optional.of(moderatorRole));
         when(userRepository.findById(1L)).thenReturn(Optional.empty());
 
         RuntimeException exception = assertThrows(RuntimeException.class, () -> userRoleService.revokeModerator(1L));
@@ -241,14 +242,14 @@ class UserRoleServiceImplTest {
     // Testa a remocao de permissao de moderador quando usuario ja nao possui ela
     @Test
     void shouldNotRevokeModeratorWhenUserDoesNotHaveModeratorRole() {
-        Role moderatorRole = createRole("ROLE_MODERATOR");
-        Role userRole = createRole("ROLE_USER");
+        Role moderatorRole = createRole(RoleType.ROLE_MODERATOR.getName());
+        Role userRole = createRole(RoleType.ROLE_USER.getName());
 
         User user = new User();
         user.setId(1L);
         user.setRoles(new HashSet<>(Set.of(userRole)));
 
-        when(roleRepository.findByName("ROLE_MODERATOR")).thenReturn(Optional.of(moderatorRole));
+        when(roleRepository.findByName(RoleType.ROLE_MODERATOR.getName())).thenReturn(Optional.of(moderatorRole));
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
 
         RuntimeException exception = assertThrows(RuntimeException.class, () -> userRoleService.revokeModerator(1L));

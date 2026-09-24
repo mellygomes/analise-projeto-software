@@ -5,13 +5,13 @@ import com.jello.jello_app.confirmation.model.Confirmation;
 import com.jello.jello_app.confirmation.repository.ConfirmationRepository;
 import com.jello.jello_app.domain.RequestContext;
 import com.jello.jello_app.enumeration.EventType;
+import com.jello.jello_app.enumeration.RoleType;
 import com.jello.jello_app.event.UserEvent;
 import com.jello.jello_app.role.model.Role;
 import com.jello.jello_app.role.repository.RoleRepository;
 import com.jello.jello_app.user.dto.UpdateUserRequest;
 import com.jello.jello_app.user.model.User;
 import com.jello.jello_app.user.repository.UserRepository;
-import io.jsonwebtoken.lang.Collections;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User register(RegisterRequest request) {
-        Role roleUser = roleRepository.findByName("ROLE_USER")
+        Role roleUser = roleRepository.findByName(RoleType.ROLE_USER.getName())
                 .orElseThrow(() -> new RuntimeException("Tipo de usuario não encontrado! (ROLE_USER)"));
         try {
             User user = createUser(roleUser, request);

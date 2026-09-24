@@ -1,5 +1,6 @@
 package com.jello.jello_app.role.service;
 
+import com.jello.jello_app.enumeration.RoleType;
 import com.jello.jello_app.role.model.Role;
 import com.jello.jello_app.role.repository.RoleRepository;
 import com.jello.jello_app.user.model.User;
@@ -16,7 +17,7 @@ public class UserRoleServiceImpl implements UserRoleService {
 
     @Override
     public User grantAdmin(Long userId) {
-        Role adminRole = roleRepository.findByName("ROLE_ADMIN")
+        Role adminRole = roleRepository.findByName(RoleType.ROLE_ADMIN.getName())
                 .orElseThrow(() -> new RuntimeException("ROLE_ADMIN não encontrado!"));
         return userRepository.findById(userId)
                 .map(existingUser -> {
@@ -28,7 +29,7 @@ public class UserRoleServiceImpl implements UserRoleService {
 
     @Override
     public User revokeAdmin(Long userId) {
-        Role adminRole = roleRepository.findByName("ROLE_ADMIN")
+        Role adminRole = roleRepository.findByName(RoleType.ROLE_ADMIN.getName())
                 .orElseThrow(() -> new RuntimeException("ROLE_ADMIN não encontrado!"));
 
         User user = userRepository.findById(userId)
@@ -45,7 +46,7 @@ public class UserRoleServiceImpl implements UserRoleService {
 
     @Override
     public User grantModerator(Long userId) {
-        Role moderatorRole = roleRepository.findByName("ROLE_MODERATOR")
+        Role moderatorRole = roleRepository.findByName(RoleType.ROLE_MODERATOR.getName())
                 .orElseThrow(() -> new RuntimeException("ROLE_MODERATOR não encontrado!"));
         return userRepository.findById(userId)
                 .map(existingUser -> {
@@ -57,7 +58,7 @@ public class UserRoleServiceImpl implements UserRoleService {
 
     @Override
     public User revokeModerator(Long userId) {
-        Role moderatorRole = roleRepository.findByName("ROLE_MODERATOR")
+        Role moderatorRole = roleRepository.findByName(RoleType.ROLE_MODERATOR.getName())
                 .orElseThrow(() -> new RuntimeException("ROLE_MODERATOR não encontrado!"));
 
         User user = userRepository.findById(userId)
