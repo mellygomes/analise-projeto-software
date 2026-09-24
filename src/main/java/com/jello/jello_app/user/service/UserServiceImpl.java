@@ -11,12 +11,14 @@ import com.jello.jello_app.role.repository.RoleRepository;
 import com.jello.jello_app.user.dto.UpdateUserRequest;
 import com.jello.jello_app.user.model.User;
 import com.jello.jello_app.user.repository.UserRepository;
+import io.jsonwebtoken.lang.Collections;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -89,7 +91,7 @@ public class UserServiceImpl implements UserService {
         user.setUsername(request.getUsername());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setProfilePicture(null);
-        user.setRoles(Set.of(roleUser));
+        user.setRoles(new HashSet<>(Set.of(roleUser)));
         user.setBio(null);
         user.setEnabled(false);
 
