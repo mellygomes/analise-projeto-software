@@ -39,16 +39,6 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public CommentDTO commentDTOBuilder(Comment comment) {
-        return CommentDTO.builder()
-                .id(comment.getId())
-                .postId(comment.getPost().getId())
-                .user(comment.getUser().getUsername())
-                .content(comment.getContent())
-                .build();
-    }
-
-    @Override
     public List<CommentDTO> getAllCommentsFromPost(Post postId) {
         List<Comment> comments = commentRepository.findByPost(postId);
 
