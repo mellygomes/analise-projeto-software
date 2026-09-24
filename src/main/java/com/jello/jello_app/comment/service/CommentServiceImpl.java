@@ -39,8 +39,8 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public List<CommentDTO> getAllCommentsFromPost(Post postId) {
-        List<Comment> comments = commentRepository.findByPost(postId);
+    public List<CommentDTO> getAllCommentsFromPost(Post post) {
+        List<Comment> comments = commentRepository.findByPost(post);
 
         return comments.stream()
                 .map(com -> CommentDTO.builder()
@@ -56,7 +56,7 @@ public class CommentServiceImpl implements CommentService {
     public void deleteComment(Long commentId) {
         commentRepository.findById(commentId)
                 .ifPresentOrElse(commentRepository::delete, () -> {
-                    throw new RuntimeException("Comment not found!");
+                    throw new RuntimeException("Comentário não encontrado!");
                 });
     }
 }

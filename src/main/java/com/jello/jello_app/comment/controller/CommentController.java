@@ -36,8 +36,8 @@ public class CommentController {
     }
 
     @GetMapping("/{postId}/all")
-    public ResponseEntity<ApiResponse> getAllCommentsFromPost(@PathVariable Post postId) {
-        List<CommentDTO> comments = commentService.getAllCommentsFromPost(postId);
+    public ResponseEntity<ApiResponse> getAllCommentsFromPost(@PathVariable Post post) {
+        List<CommentDTO> comments = commentService.getAllCommentsFromPost(post);
         return ResponseEntity.ok(new ApiResponse("Comments listed!", comments));
     }
 
