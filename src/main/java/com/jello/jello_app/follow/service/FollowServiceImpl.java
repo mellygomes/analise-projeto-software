@@ -26,11 +26,11 @@ public class FollowServiceImpl implements FollowService {
         User following = userService.getUserById(userId);
 
         if (follower.getId().equals(userId)) {
-            throw new RuntimeException("You cannot follow yourself");
+            throw new RuntimeException("Você não pode seguir a si mesmo!");
         }
 
         if (followRepository.existsByFollowerAndFollowing(follower, following)) {
-            throw new RuntimeException("You already follow this user");
+            throw new RuntimeException("Você já segue esse usuário!");
         }
 
         Follow follow = new Follow();
@@ -48,11 +48,11 @@ public class FollowServiceImpl implements FollowService {
         User following = userService.getUserById(userId);
 
         if (follower.getId().equals(userId)) {
-            throw new RuntimeException("You cannot unfollow yourself");
+            throw new RuntimeException("Você não pode deixar de seguir a si mesmo.");
         }
 
         Follow follow = followRepository.findByFollowerAndFollowing(follower, following)
-                .orElseThrow(() -> new RuntimeException("You do not follow this user"));
+                .orElseThrow(() -> new RuntimeException("Você não segue esse usuário"));
 
         followRepository.delete(follow);
     }
