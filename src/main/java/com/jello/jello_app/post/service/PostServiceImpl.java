@@ -6,6 +6,7 @@ import com.jello.jello_app.image.service.ImageService;
 import com.jello.jello_app.post.dto.AiVoteResponseDTO;
 import com.jello.jello_app.post.dto.CreatePostRequest;
 import com.jello.jello_app.post.dto.PostDTO;
+import com.jello.jello_app.post.mapper.PostMapper;
 import com.jello.jello_app.post.model.Post;
 import com.jello.jello_app.post.model.PostAiVote;
 import com.jello.jello_app.post.repository.PostAiVoteRepository;
@@ -58,16 +59,6 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public PostDTO postDTOBuilder(Post post) {
-        return PostDTO.builder()
-                .id(post.getId())
-                .title(post.getTitle())
-                .content(post.getContent())
-                .build();
-
-    }
-
-    @Override
     public Post getPostById(Long id) {
         return postRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Post not found!"));
@@ -115,7 +106,7 @@ public class PostServiceImpl implements PostService {
             posts = postRepository.findFeedPosts(followingIds, pageable);
         }
 
-        return posts.map(this::postDTOBuilder);
+        return posts.map(PostMapper::toDto);
     }
 
     @Override
