@@ -61,14 +61,14 @@ public class PostServiceImpl implements PostService {
     @Override
     public Post getPostById(Long id) {
         return postRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Post not found!"));
+                .orElseThrow(() -> new RuntimeException("Post não encontrado!"));
     }
 
     @Override
     public void deletePost(Long id) {
         postRepository.findById(id)
                 .ifPresentOrElse(postRepository::delete, () -> {
-                    throw new RuntimeException("Post not found!");
+                    throw new RuntimeException("Falha ao deletar Post. Post não encontrado!");
                 });
     }
 
@@ -80,7 +80,7 @@ public class PostServiceImpl implements PostService {
                     existingPost.setContent(request.getContent());
                     return postRepository.save(existingPost);
                 })
-                .orElseThrow(() -> new RuntimeException("Post not found!"));
+                .orElseThrow(() -> new RuntimeException("Falha ao atualizar o Post. Post não encontrado!"));
     }
 
     @Override
