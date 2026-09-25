@@ -3,8 +3,11 @@ package com.jello.jello_app.post.service;
 import com.jello.jello_app.auth.service.AuthService;
 import com.jello.jello_app.follow.repository.FollowRepository;
 import com.jello.jello_app.image.service.ImageService;
+import com.jello.jello_app.post.dto.AiVoteResponseDTO;
 import com.jello.jello_app.post.dto.CreatePostRequest;
+import com.jello.jello_app.post.dto.PostDTO;
 import com.jello.jello_app.post.model.Post;
+import com.jello.jello_app.post.model.PostAiVote;
 import com.jello.jello_app.post.repository.PostAiVoteRepository;
 import com.jello.jello_app.post.repository.PostRepository;
 import com.jello.jello_app.user.model.User;
@@ -13,6 +16,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -229,34 +235,181 @@ class PostServiceImplTest {
         verify(postRepository, never()).save(any());
     }
 
-    // TODO: Criar teste para recuperar os posts do feed
-    // Começei mas nao terminei
-//    @Test
-//    void shouldGetFeedPosts() {
-//        User user = new User();
-//        user.setId(1L);
-//        user.setUsername("fulano");
-//
-//        when(authService.getAuthenticatedUser()).thenReturn(user);
-//    }
+    // Teste para recuperar os posts do feed
+    @Test
+    void shouldGetFeedPosts() {
+        User user = new User();
+        user.setId(1L);
+        user.setUsername("fulano");
 
-    // TODO: Criar teste para simular caminho falho ao tentar recuperar posts do feed
-//    @Test
-//    void shouldFailWhenGetFeedPosts() {}
+        Post post = new Post();
+        post.setId(1L);
+        post.setTitle("Post do feed");
+        post.setContent("Conteúdo do post");
 
-    // TODO: Criar teste para incrementar o valor de contagem de feedback de IA
-//    @Test
-//    void shouldIncrement() {}
+        when(authService.getAuthenticatedUser()).thenReturn(user);
+        when(followRepository.findUsersFollowedBy(user.getId()))
+                .thenReturn(List.of());
 
-    // TODO: Criar teste que falha ao tentar incrementar o valor de contagem de feedback de IA
-//    @Test
-//    void shouldFailWhenIncrement() {}
+        Page<Post> posts = new PageImpl<>(List.of(post));
 
-    // TODO: Criar teste para decrementar o valor de contagem de feedback de IA
-//    @Test
-//    void shouldDecrement() {}
+        when(postRepository.findAllByOrderByCreatedAtDesc(any(Pageable.class)))
+                .thenReturn(posts);
 
-    // TODO: Criar teste que falha ao tentar decrementar o valor de contagem de feeback de IA
-//    @Test
-//    void shouldFailWhenDecrement() {}
+        Page<PostDTO> result = postService.getFeedPosts(0, 10);
+
+        assertNotNull(result);
+        assertEquals(1, result.getTotalElements());
+
+        verify(authService, times(1)).getAuthenticatedUser();
+        verify(followRepository, times(1)).findUsersFollowedBy(user.getId());
+        verify(postRepository, times(1))
+                .findAllByOrderByCreatedAtDesc(any(Pageable.class));
+
+        verify(postRepository, never())
+                .findFeedPosts(anyList(), any(Pageable.class));
+    }
+
+    // Teste para simular caminho falho ao tentar recuperar posts do feed
+    @Test
+    void shouldFailWhenGetFeedPosts() {
+        User user = new User();
+        user.setId(1L);
+        user.setUsername("fulano");
+
+        when(authService.getAuthenticatedUser()).thenReturn(user);
+        when(followRepository.findUsersFollowedBy(user.getId()))
+                .thenThrow(new RuntimeException("Erro ao recuperar usuários seguidos"));
+
+        RuntimeException exception = assertThrows(
+                RuntimeException.class,
+                () -> postService.getFeedPosts(0, 10)
+        );
+
+        assertEquals(
+                "Erro ao recuperar usuários seguidos",
+                exception.getMessage()
+        );
+
+        verify(authService, times(1)).getAuthenticatedUser();
+        verify(followRepository, times(1)).findUsersFollowedBy(user.getId());
+        verifyNoInteractions(postRepository);
+    }
+
+    // Teste para incrementar o valor de contagem de feedback de IA
+    @Test
+    void shouldIncrement() {
+        Long postId = 1L;
+
+        User user = new User();
+        user.setId(1L);
+        user.setUsername("fulano");
+
+        Post post = new Post();
+        post.setId(postId);
+        post.setTitle("Post teste");
+        post.setContent("Conteúdo teste");
+
+        when(authService.getAuthenticatedUser()).thenReturn(user);
+        when(postRepository.findById(postId)).thenReturn(Optional.of(post));
+        when(postAiVoteRepository.save(any(PostAiVote.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
+        AiVoteResponseDTO result = postService.incrementAiFeedback(postId);
+
+        assertNotNull(result);
+        assertTrue(result.isVoted());
+        assertEquals(1, result.getCount());
+
+        verify(authService, times(1)).getAuthenticatedUser();
+        verify(postRepository, times(1)).findById(postId);
+        verify(postAiVoteRepository, times(1)).save(any(PostAiVote.class));
+    }
+
+    // Teste que falha ao tentar incrementar o valor de contagem de feedback de IA
+    @Test
+    void shouldFailWhenIncrement() {
+        Long postId = 1L;
+
+        User user = new User();
+        user.setId(1L);
+        user.setUsername("fulano");
+
+        when(authService.getAuthenticatedUser()).thenReturn(user);
+        when(postRepository.findById(postId))
+                .thenReturn(Optional.empty());
+
+        assertThrows(
+                RuntimeException.class,
+                () -> postService.incrementAiFeedback(postId)
+        );
+
+        verify(authService, times(1)).getAuthenticatedUser();
+        verify(postRepository, times(1)).findById(postId);
+        verifyNoInteractions(postAiVoteRepository);
+    }
+
+    // Teste para decrementar o valor de contagem de feedback de IA
+    @Test
+    void shouldDecrement() {
+        Long postId = 1L;
+
+        User user = new User();
+        user.setId(1L);
+        user.setUsername("fulano");
+
+        Post post = new Post();
+        post.setId(postId);
+        post.setTitle("Post teste");
+        post.setContent("Conteúdo teste");
+
+        post.incrementAiCount();
+
+        when(authService.getAuthenticatedUser()).thenReturn(user);
+        when(postAiVoteRepository.deleteByUserIdAndPostId(user.getId(), postId))
+                .thenReturn(1);
+        when(postRepository.findById(postId))
+                .thenReturn(Optional.of(post));
+
+        AiVoteResponseDTO result = postService.decrementAiFeedback(postId);
+
+        assertNotNull(result);
+        assertFalse(result.isVoted());
+        assertEquals(0, result.getCount());
+
+        verify(authService, times(1)).getAuthenticatedUser();
+        verify(postAiVoteRepository, times(1))
+                .deleteByUserIdAndPostId(user.getId(), postId);
+        verify(postRepository, times(1)).findById(postId);
+    }
+
+    // Teste que falha ao tentar decrementar o valor de contagem de feeback de IA
+    @Test
+    void shouldFailWhenDecrement() {
+        Long postId = 1L;
+
+        User user = new User();
+        user.setId(1L);
+        user.setUsername("fulano");
+
+        when(authService.getAuthenticatedUser()).thenReturn(user);
+        when(postAiVoteRepository.deleteByUserIdAndPostId(user.getId(), postId))
+                .thenReturn(0);
+
+        IllegalStateException exception = assertThrows(
+                IllegalStateException.class,
+                () -> postService.decrementAiFeedback(postId)
+        );
+
+        assertEquals(
+                "Usuário nao possui voto cadastrado nesse post.",
+                exception.getMessage()
+        );
+
+        verify(authService, times(1)).getAuthenticatedUser();
+        verify(postAiVoteRepository, times(1))
+                .deleteByUserIdAndPostId(user.getId(), postId);
+
+        verifyNoInteractions(postRepository);
+    }
 }
