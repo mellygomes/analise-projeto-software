@@ -130,7 +130,7 @@ class UserServiceImplTest {
 
         RuntimeException exception = assertThrows(RuntimeException.class, () -> userService.getUserById(id));
 
-        assertEquals("User not found!", exception.getMessage());
+        assertEquals("Usuário não encontrado!", exception.getMessage());
         verify(userRepository, times(1)).findById(id);
     }
 
@@ -155,7 +155,7 @@ class UserServiceImplTest {
 
         RuntimeException exception = assertThrows(RuntimeException.class, () -> userService.deleteUser(id));
 
-        assertEquals("User not found", exception.getMessage());
+        assertEquals("Usuário não encontrado!", exception.getMessage());
         verify(userRepository, never()).delete(any(User.class));
     }
 
@@ -191,7 +191,7 @@ class UserServiceImplTest {
 
         RuntimeException exception = assertThrows(RuntimeException.class, () -> userService.updateUser(request, id));
 
-        assertEquals("User not found!", exception.getMessage());
+        assertEquals("Usuário não encontrado!", exception.getMessage());
         verify(userRepository, never()).save(any(User.class));
     }
 

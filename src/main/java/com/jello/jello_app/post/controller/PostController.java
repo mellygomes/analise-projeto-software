@@ -4,6 +4,7 @@ import com.jello.jello_app.post.dto.AiVoteResponseDTO;
 import com.jello.jello_app.common.dto.ApiResponse;
 import com.jello.jello_app.post.dto.CreatePostRequest;
 import com.jello.jello_app.post.dto.PostDTO;
+import com.jello.jello_app.post.mapper.PostMapper;
 import com.jello.jello_app.post.model.Post;
 import com.jello.jello_app.post.service.PostService;
 import lombok.RequiredArgsConstructor;
@@ -33,8 +34,8 @@ public class PostController {
 
         try {
             Post createdPost = postService.createPost(request, images);
-            PostDTO post = postService.postDTOBuilder(createdPost);
-            return ResponseEntity.ok(new ApiResponse("Post created successfully!", post));
+            PostDTO post = PostMapper.toDto(createdPost);
+            return ResponseEntity.ok(new ApiResponse("Post criado com sucesso!", post));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse(e.getMessage(), null));
@@ -46,7 +47,7 @@ public class PostController {
     public ResponseEntity<ApiResponse> deletePost(@PathVariable Long postId) {
         try {
             postService.deletePost(postId);
-            return ResponseEntity.ok(new ApiResponse("Post deleted successfully!", null));
+            return ResponseEntity.ok(new ApiResponse("Post deletado com sucesso!", null));
         } catch (Exception e) {
             return ResponseEntity.status(NOT_FOUND)
                     .body(new ApiResponse(e.getMessage(), null));
@@ -58,8 +59,8 @@ public class PostController {
     public ResponseEntity<ApiResponse> updatePost(@PathVariable Long postId, @RequestBody CreatePostRequest request) {
         try {
             Post post = postService.updatePost(request, postId);
-            PostDTO postResponse = postService.postDTOBuilder(post);
-            return ResponseEntity.ok(new ApiResponse("Post updated successfully!", postResponse));
+            PostDTO postResponse = PostMapper.toDto(post);
+            return ResponseEntity.ok(new ApiResponse("Post atualizado com sucesso!", postResponse));
         } catch (Exception e) {
             return ResponseEntity.status(NOT_FOUND)
                     .body(new ApiResponse(e.getMessage(), null));
@@ -74,7 +75,7 @@ public class PostController {
     ) {
         try {
             Page<PostDTO> posts = postService.getFeedPosts(page, size);
-            return ResponseEntity.ok(new ApiResponse("Posts loaded successfully!", posts));
+            return ResponseEntity.ok(new ApiResponse("Posts carregados com sucesso!", posts));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse(e.getMessage(), null));
